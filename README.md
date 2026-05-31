@@ -17,7 +17,7 @@ We have successfully migrated the core Authentication workflow from the Web proj
 - **Framework**: Flutter
 - **Icons**: Lucide Icons (matching the web project)
 - **State Management**: Provider
-- **Networking**: Http with interceptor-like logic for JWT
+- **Networking**: Http with interceptor-like logic for JWT   
 - **Storage**: Flutter Secure Storage
 
 ## 🛠 Setup and Installation
