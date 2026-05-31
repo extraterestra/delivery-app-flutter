@@ -20,6 +20,7 @@ We have successfully migrated the core Authentication workflow from the Web proj
 - **Networking**: Http with interceptor-like logic for JWT   
 - **Storage**: Flutter Secure Storage
 
+
 ## 🛠 Setup and Installation
 
 ### Prerequisites:
