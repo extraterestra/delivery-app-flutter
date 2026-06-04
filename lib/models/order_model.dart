@@ -37,6 +37,8 @@ class Order {
   final double customerLat;
   final double customerLng;
   final Restaurant? restaurant;
+  final DateTime? deliveredAt;
+  final double? driverPayoutAmount;
 
   Order({
     required this.id,
@@ -51,6 +53,8 @@ class Order {
     required this.customerLat,
     required this.customerLng,
     this.restaurant,
+    this.deliveredAt,
+    this.driverPayoutAmount,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -67,6 +71,8 @@ class Order {
       customerLat: (json['customer_lat'] ?? 0).toDouble(),
       customerLng: (json['customer_lng'] ?? 0).toDouble(),
       restaurant: json['restaurant'] != null ? Restaurant.fromJson(json['restaurant']) : null,
+      deliveredAt: json['delivered_at'] != null ? DateTime.parse(json['delivered_at']) : null,
+      driverPayoutAmount: json['driver_payout_amount'] != null ? (json['driver_payout_amount'] as num).toDouble() : null,
     );
   }
 }

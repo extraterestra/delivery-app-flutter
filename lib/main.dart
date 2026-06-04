@@ -4,6 +4,7 @@ import 'providers/auth_provider.dart';
 import 'providers/order_provider.dart';
 import 'screens/auth_screen.dart';
 import 'screens/orders_screen.dart';
+import 'screens/dashboard_screen.dart';
 
 void main() {
   runApp(
@@ -48,7 +49,7 @@ class AuthWrapper extends StatelessWidget {
     }
 
     if (authProvider.user != null) {
-      return const OrdersScreen();
+      return const DashboardScreen();
     }
 
     return const AuthScreen();

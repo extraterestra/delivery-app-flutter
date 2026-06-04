@@ -6,11 +6,33 @@ class OrderProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
   List<Order> _availableOrders = [];
   List<Order> _activeOrders = [];
+  List<Order> _completedOrders = [];
   bool _loading = false;
 
   List<Order> get availableOrders => _availableOrders;
   List<Order> get activeOrders => _activeOrders;
+  List<Order> get completedOrders => _completedOrders;
   bool get loading => _loading;
+
+  double get todayEarnings {
+    final now = DateTime.now();
+    return _completedOrders.where((order) {
+      if (order.deliveredAt == null) return false;
+      return order.deliveredAt!.year == now.year &&
+          order.deliveredAt!.month == now.month &&
+          order.deliveredAt!.day == now.day;
+    }).fold(0.0, (sum, order) => sum + (order.driverPayoutAmount ?? order.deliveryFee));
+  }
+
+  int get todayDeliveriesCount {
+    final now = DateTime.now();
+    return _completedOrders.where((order) {
+      if (order.deliveredAt == null) return false;
+      return order.deliveredAt!.year == now.year &&
+          order.deliveredAt!.month == now.month &&
+          order.deliveredAt!.day == now.day;
+    }).length;
+  }
 
   OrderProvider() {
     _apiService.init();
@@ -25,6 +47,9 @@ class OrderProvider with ChangeNotifier {
       
       final List<dynamic> activeData = await _apiService.request('/api/orders/delivery/active');
       _activeOrders = activeData.map((json) => Order.fromJson(json)).toList();
+
+      final List<dynamic> completedData = await _apiService.request('/api/orders/delivery/history');
+      _completedOrders = completedData.map((json) => Order.fromJson(json)).toList();
     } catch (e) {
       print('Error fetching orders: $e');
     } finally {
