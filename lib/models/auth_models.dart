@@ -1,3 +1,21 @@
+double? _parseNullableDouble(dynamic value) {
+  if (value == null) return null;
+  if (value is double) return value;
+  if (value is int) return value.toDouble();
+  if (value is num) return value.toDouble();
+  if (value is String) {
+    final s = value.trim();
+    if (s.isEmpty) return null;
+    return double.tryParse(s);
+  }
+  return null;
+}
+
+double _parseDoubleOrZero(dynamic value) {
+  final v = _parseNullableDouble(value);
+  return v ?? 0.0;
+}
+
 class AuthUser {
   final String id;
   final String email;
@@ -39,9 +57,9 @@ class Profile {
       phone: json['phone'],
       avatarUrl: json['avatar_url'],
       isAvailable: json['is_available'] ?? false,
-      currentLat: json['current_lat']?.toDouble(),
-      currentLng: json['current_lng']?.toDouble(),
-      totalEarnings: (json['total_earnings'] ?? 0).toDouble(),
+      currentLat: _parseNullableDouble(json['current_lat']),
+      currentLng: _parseNullableDouble(json['current_lng']),
+      totalEarnings: _parseDoubleOrZero(json['total_earnings']),
     );
   }
 }
