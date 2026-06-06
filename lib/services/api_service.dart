@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://10.0.2.2:3000'; // Standard Android Emulator loopback
+  // URL de Staging en Railway
+  static const String baseUrl = 'https://delivery-app-staging-backend.up.railway.app';
   final _storage = const FlutterSecureStorage();
   String? _token;
 

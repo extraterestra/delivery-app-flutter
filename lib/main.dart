@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
+import 'providers/order_provider.dart';
 import 'screens/auth_screen.dart';
+import 'screens/orders_screen.dart';
+import 'screens/dashboard_screen.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
       ],
       child: const MyApp(),
     ),
@@ -45,27 +49,7 @@ class AuthWrapper extends StatelessWidget {
     }
 
     if (authProvider.user != null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Dashboard'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () => authProvider.signOut(),
-            ),
-          ],
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Witaj, ${authProvider.profile?.fullName ?? 'Kierowco'}!'),
-              const SizedBox(height: 10),
-              Text('Email: ${authProvider.user?.email}'),
-            ],
-          ),
-        ),
-      );
+      return const DashboardScreen();
     }
 
     return const AuthScreen();
