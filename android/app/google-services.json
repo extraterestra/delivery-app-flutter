@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "815520265086",
+    "project_id": "rabka-spike",
+    "storage_bucket": "rabka-spike.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815520265086:android:0b3f8cd4e60b6bf4fe792f",
+        "android_client_info": {
+          "package_name": "com.rabka.dostawa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEPOfgNj0HPumUN9TLuvN39yQcclwFT5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
