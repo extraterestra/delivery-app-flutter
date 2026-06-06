@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'providers/auth_provider.dart';
 import 'providers/order_provider.dart';
+import 'services/notification_service.dart';
 import 'screens/auth_screen.dart';
 import 'screens/orders_screen.dart';
 import 'screens/dashboard_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Firebase (Requires google-services.json)
+  try {
+    await Firebase.initializeApp();
+    await NotificationService().init();
+  } catch (e) {
+    print('Firebase initialization failed: $e');
+    print('Make sure google-services.json is placed in android/app/');
+  }
+
   runApp(
     MultiProvider(
       providers: [

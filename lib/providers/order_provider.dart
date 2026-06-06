@@ -42,8 +42,18 @@ class OrderProvider with ChangeNotifier {
     _loading = true;
     notifyListeners();
     try {
+      print('Fetching available orders from: /api/orders/delivery/available');
       final List<dynamic> data = await _apiService.request('/api/orders/delivery/available');
-      _availableOrders = data.map((json) => Order.fromJson(json)).toList();
+      print('Received ${data.length} available orders');
+      _availableOrders = data.map((json) {
+        try {
+          return Order.fromJson(json);
+        } catch (e) {
+          print('Error parsing order JSON: $e');
+          print('JSON data: $json');
+          rethrow;
+        }
+      }).toList();
       
       final List<dynamic> activeData = await _apiService.request('/api/orders/delivery/active');
       _activeOrders = activeData.map((json) => Order.fromJson(json)).toList();
@@ -51,7 +61,7 @@ class OrderProvider with ChangeNotifier {
       final List<dynamic> completedData = await _apiService.request('/api/orders/delivery/history');
       _completedOrders = completedData.map((json) => Order.fromJson(json)).toList();
     } catch (e) {
-      print('Error fetching orders: $e');
+      print('FATAL Error fetching orders: $e');
     } finally {
       _loading = false;
       notifyListeners();
