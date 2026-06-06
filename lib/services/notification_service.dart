@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
@@ -5,6 +6,10 @@ import 'package:flutter/foundation.dart';
 class NotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  
+  // Stream to notify listeners (like OrderProvider) about new order updates
+  final _onMessageController = StreamController<RemoteMessage>.broadcast();
+  Stream<RemoteMessage> get onMessage => _onMessageController.stream;
 
   Future<void> init() async {
     // Request permission
@@ -39,8 +44,13 @@ class NotificationService {
       // Handle foreground messages
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         _showLocalNotification(message);
+        _onMessageController.add(message); // Notify listeners
       });
     }
+  }
+
+  void dispose() {
+    _onMessageController.close();
   }
 
   static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {

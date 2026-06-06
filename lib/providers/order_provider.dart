@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/order_model.dart';
 import '../services/api_service.dart';
+import '../services/notification_service.dart';
 
 class OrderProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
+  final NotificationService? _notificationService;
   List<Order> _availableOrders = [];
   List<Order> _activeOrders = [];
   List<Order> _completedOrders = [];
@@ -34,8 +36,16 @@ class OrderProvider with ChangeNotifier {
     }).length;
   }
 
-  OrderProvider() {
+  OrderProvider([this._notificationService]) {
     _apiService.init();
+    _listenToNotifications();
+  }
+
+  void _listenToNotifications() {
+    _notificationService?.onMessage.listen((message) {
+      print('New notification received! Refreshing orders...');
+      fetchOrders();
+    });
   }
 
   Future<void> fetchOrders() async {
