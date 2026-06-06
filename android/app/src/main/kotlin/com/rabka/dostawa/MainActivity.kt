@@ -1,4 +1,4 @@
-package com.hguev.helloworld.hello_world
+package com.rabka.dostawa
 
 import io.flutter.embedding.android.FlutterActivity
 

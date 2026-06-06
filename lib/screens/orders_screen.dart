@@ -231,9 +231,10 @@ class _OrderCard extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'pending': return Colors.orange;
+      case 'ready': return Colors.green; // Añadido para SCRUM-122
       case 'accepted': return Colors.blue;
       case 'picked_up': return Colors.purple;
-      case 'delivered': return Colors.green;
+      case 'delivered': return Colors.grey;
       default: return Colors.grey;
     }
   }
