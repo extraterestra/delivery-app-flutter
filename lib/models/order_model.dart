@@ -1,3 +1,21 @@
+double? _parseNullableDouble(dynamic value) {
+  if (value == null) return null;
+  if (value is double) return value;
+  if (value is int) return value.toDouble();
+  if (value is num) return value.toDouble();
+  if (value is String) {
+    final s = value.trim();
+    if (s.isEmpty) return null;
+    return double.tryParse(s);
+  }
+  return null;
+}
+
+double _parseDoubleOrZero(dynamic value) {
+  final v = _parseNullableDouble(value);
+  return v ?? 0.0;
+}
+
 class Restaurant {
   final String name;
   final String address;
@@ -18,8 +36,8 @@ class Restaurant {
       name: json['name'],
       address: json['address'],
       phone: json['phone'],
-      lat: (json['lat'] ?? 0).toDouble(),
-      lng: (json['lng'] ?? 0).toDouble(),
+      lat: _parseDoubleOrZero(json['lat']),
+      lng: _parseDoubleOrZero(json['lng']),
     );
   }
 }
@@ -62,17 +80,17 @@ class Order {
       id: json['id'],
       status: json['status'],
       createdAt: DateTime.parse(json['created_at']),
-      deliveryFee: (json['delivery_fee'] ?? 0).toDouble(),
+      deliveryFee: _parseDoubleOrZero(json['delivery_fee']),
       estimatedTimeMinutes: json['estimated_time_minutes'],
       customerName: json['customer_name'],
       customerAddress: json['customer_address'],
       customerPhone: json['customer_phone'],
       orderDetails: json['order_details'],
-      customerLat: (json['customer_lat'] ?? 0).toDouble(),
-      customerLng: (json['customer_lng'] ?? 0).toDouble(),
+      customerLat: _parseDoubleOrZero(json['customer_lat']),
+      customerLng: _parseDoubleOrZero(json['customer_lng']),
       restaurant: json['restaurant'] != null ? Restaurant.fromJson(json['restaurant']) : null,
       deliveredAt: json['delivered_at'] != null ? DateTime.parse(json['delivered_at']) : null,
-      driverPayoutAmount: json['driver_payout_amount'] != null ? (json['driver_payout_amount'] as num).toDouble() : null,
+      driverPayoutAmount: json['driver_payout_amount'] != null ? _parseNullableDouble(json['driver_payout_amount']) : null,
     );
   }
 }
