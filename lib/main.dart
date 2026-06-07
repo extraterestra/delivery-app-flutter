@@ -11,15 +11,23 @@ import 'screens/dashboard_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  final notificationService = NotificationService();
-  
-  // Initialize Firebase (Requires google-services.json)
+  // Initialize Firebase first (required for NotificationService)
   try {
     await Firebase.initializeApp();
-    await notificationService.init();
   } catch (e) {
-    print('Firebase initialization failed: $e');
-    print('Make sure google-services.json is placed in android/app/');
+    print('Firebase initialization warning: $e');
+  }
+
+  final notificationService = NotificationService();
+
+  // Defer notification service initialization until after the UI is visible
+  // to avoid blocking system services during cold startup.
+  void _deferredInit() async {
+    try {
+      await notificationService.init();
+    } catch (e) {
+      print('Notification service init failed: $e');
+    }
   }
 
   runApp(
@@ -31,6 +39,8 @@ void main() async {
       child: const MyApp(),
     ),
   );
+  // Start deferred initialization (non-blocking)
+  _deferredInit();
 }
 
 class MyApp extends StatelessWidget {
