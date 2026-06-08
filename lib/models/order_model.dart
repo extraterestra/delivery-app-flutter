@@ -17,6 +17,7 @@ double _parseDoubleOrZero(dynamic value) {
 }
 
 class Restaurant {
+  final String? id;
   final String name;
   final String address;
   final String? phone;
@@ -24,6 +25,7 @@ class Restaurant {
   final double lng;
 
   Restaurant({
+    this.id,
     required this.name,
     required this.address,
     this.phone,
@@ -33,9 +35,10 @@ class Restaurant {
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
     return Restaurant(
-      name: json['name'],
-      address: json['address'],
-      phone: json['phone'],
+      id: json['id']?.toString(),
+      name: (json['name'] ?? '').toString(),
+      address: (json['address'] ?? '').toString(),
+      phone: json['phone']?.toString(),
       lat: _parseDoubleOrZero(json['lat']),
       lng: _parseDoubleOrZero(json['lng']),
     );
@@ -44,8 +47,11 @@ class Restaurant {
 
 class Order {
   final String id;
+  final String? restaurantId;
+  final String? driverId;
   final String status;
   final DateTime createdAt;
+  final DateTime? updatedAt;
   final double deliveryFee;
   final int? estimatedTimeMinutes;
   final String customerName;
@@ -55,13 +61,19 @@ class Order {
   final double customerLat;
   final double customerLng;
   final Restaurant? restaurant;
+  final DateTime? pickedUpAt;
   final DateTime? deliveredAt;
   final double? driverPayoutAmount;
+  final String? driverPaymentStatus;
+  final DateTime? driverPaidAt;
 
   Order({
     required this.id,
+    this.restaurantId,
+    this.driverId,
     required this.status,
     required this.createdAt,
+    this.updatedAt,
     required this.deliveryFee,
     this.estimatedTimeMinutes,
     required this.customerName,
@@ -71,26 +83,37 @@ class Order {
     required this.customerLat,
     required this.customerLng,
     this.restaurant,
+    this.pickedUpAt,
     this.deliveredAt,
     this.driverPayoutAmount,
+    this.driverPaymentStatus,
+    this.driverPaidAt,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      id: json['id'],
-      status: json['status'],
+      id: json['id'].toString(),
+      restaurantId: json['restaurant_id']?.toString(),
+      driverId: json['driver_id']?.toString(),
+      status: (json['status'] ?? '').toString(),
       createdAt: DateTime.parse(json['created_at']),
+      updatedAt: json['updated_at'] != null ? DateTime.tryParse(json['updated_at'].toString()) : null,
       deliveryFee: _parseDoubleOrZero(json['delivery_fee']),
-      estimatedTimeMinutes: json['estimated_time_minutes'],
-      customerName: json['customer_name'],
-      customerAddress: json['customer_address'],
-      customerPhone: json['customer_phone'],
-      orderDetails: json['order_details'],
+      estimatedTimeMinutes: json['estimated_time_minutes'] is int
+          ? json['estimated_time_minutes']
+          : int.tryParse('${json['estimated_time_minutes'] ?? ''}'),
+      customerName: (json['customer_name'] ?? '').toString(),
+      customerAddress: (json['customer_address'] ?? '').toString(),
+      customerPhone: (json['customer_phone'] ?? '').toString(),
+      orderDetails: json['order_details']?.toString(),
       customerLat: _parseDoubleOrZero(json['customer_lat']),
       customerLng: _parseDoubleOrZero(json['customer_lng']),
       restaurant: json['restaurant'] != null ? Restaurant.fromJson(json['restaurant']) : null,
-      deliveredAt: json['delivered_at'] != null ? DateTime.parse(json['delivered_at']) : null,
+      pickedUpAt: json['picked_up_at'] != null ? DateTime.tryParse(json['picked_up_at'].toString()) : null,
+      deliveredAt: json['delivered_at'] != null ? DateTime.tryParse(json['delivered_at'].toString()) : null,
       driverPayoutAmount: json['driver_payout_amount'] != null ? _parseNullableDouble(json['driver_payout_amount']) : null,
+      driverPaymentStatus: json['driver_payment_status']?.toString(),
+      driverPaidAt: json['driver_paid_at'] != null ? DateTime.tryParse(json['driver_paid_at'].toString()) : null,
     );
   }
 }

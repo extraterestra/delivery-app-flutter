@@ -34,7 +34,14 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => OrderProvider(notificationService)),
+        ChangeNotifierProxyProvider<AuthProvider, OrderProvider>(
+          create: (_) => OrderProvider(notificationService),
+          update: (_, authProvider, orderProvider) {
+            final provider = orderProvider ?? OrderProvider(notificationService);
+            provider.setCurrentUserId(authProvider.user?.id);
+            return provider;
+          },
+        ),
       ],
       child: const MyApp(),
     ),

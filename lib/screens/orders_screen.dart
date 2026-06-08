@@ -32,6 +32,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
         title: const Text('Zamówienia', style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              print('[OrdersScreen] Manual refresh triggered');
+              Provider.of<OrderProvider>(context, listen: false).fetchOrders();
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => authProvider.signOut(),
           ),
