@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiService {
-  // URL de Staging en Railway
   static const String baseUrl = 'https://delivery-app-staging-backend.up.railway.app';
   final _storage = const FlutterSecureStorage();
   String? _token;
@@ -22,7 +21,17 @@ class ApiService {
   }
 
   Future<dynamic> request(String path, {String method = 'GET', Map<String, dynamic>? body}) async {
+    if (_token == null) {
+      try {
+        _token = await _storage.read(key: 'rabka_auth_token');
+      } catch (_) {}
+    }
+
     final url = Uri.parse('$baseUrl$path');
+    print('[ApiService] 🔵 $method Request: $url');
+    final tokenPreview = _token != null && _token!.length > 8 ? '${_token!.substring(0, 8)}...' : (_token ?? 'NONE');
+    print('[ApiService] Auth Token: $tokenPreview');
+
     final headers = {
       'Content-Type': 'application/json',
       if (_token != null) 'Authorization': 'Bearer $_token',
@@ -30,26 +39,43 @@ class ApiService {
 
     http.Response response;
     try {
-      if (method == 'POST') {
-        response = await http.post(url, headers: headers, body: jsonEncode(body));
-      } else if (method == 'PATCH') {
-        response = await http.patch(url, headers: headers, body: jsonEncode(body));
-      } else {
-        response = await http.get(url, headers: headers);
+      switch (method) {
+        case 'POST':
+          response = await http.post(url, headers: headers, body: body != null ? jsonEncode(body) : null);
+          break;
+        case 'PATCH':
+          response = await http.patch(url, headers: headers, body: body != null ? jsonEncode(body) : null);
+          break;
+        default:
+          response = await http.get(url, headers: headers);
       }
+      print('[ApiService] 📊 Response Status: ${response.statusCode}');
+      final previewLen = response.body.length > 200 ? 200 : response.body.length;
+      print('[ApiService] 📦 Response Body: ${response.body.substring(0, previewLen)}');
     } catch (e) {
+      print('[ApiService] ❌ Connection Error: $e');
       throw Exception('Connection error: $e');
     }
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
+      print('[ApiService] ✅ Request successful');
       if (response.body.isEmpty) return null;
       return jsonDecode(response.body);
-    } else {
-      Map<String, dynamic>? errorData;
-      try {
-        errorData = jsonDecode(response.body);
-      } catch (_) {}
-      throw Exception(errorData?['message'] ?? 'API Request failed with status: ${response.statusCode}');
     }
+
+    Map<String, dynamic>? errorData;
+    try {
+      errorData = jsonDecode(response.body);
+    } catch (_) {}
+
+    if (response.statusCode == 401) {
+      await setToken(null);
+    }
+
+    final errorMessage = errorData?['message'] ??
+        errorData?['error'] ??
+        'API Request failed with status: ${response.statusCode}';
+    print('[ApiService] ❌ API Error: ${response.statusCode} - $errorMessage');
+    throw Exception(errorMessage);
   }
 }

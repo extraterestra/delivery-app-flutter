@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../models/order_model.dart';
 import '../services/api_service.dart';
 import '../services/notification_service.dart';
@@ -10,6 +11,9 @@ class OrderProvider with ChangeNotifier {
   List<Order> _activeOrders = [];
   List<Order> _completedOrders = [];
   bool _loading = false;
+  Timer? _pollTimer;
+  static const int _pollIntervalSeconds = 15;
+  String? _currentUserId;
 
   List<Order> get availableOrders => _availableOrders;
   List<Order> get activeOrders => _activeOrders;
@@ -39,59 +43,85 @@ class OrderProvider with ChangeNotifier {
   OrderProvider([this._notificationService]) {
     _apiService.init();
     _listenToNotifications();
+    _startPeriodicPolling();
+  }
+
+  void setCurrentUserId(String? userId) {
+    final changed = _currentUserId != userId;
+    _currentUserId = userId;
+    if (changed && userId != null) {
+      fetchOrders();
+    }
+  }
+
+  void _startPeriodicPolling() {
+    _pollTimer?.cancel();
+    _pollTimer = Timer.periodic(const Duration(seconds: _pollIntervalSeconds), (_) {
+      fetchOrders();
+    });
+  }
+
+  @override
+  void dispose() {
+    _pollTimer?.cancel();
+    super.dispose();
   }
 
   void _listenToNotifications() {
-    _notificationService?.onMessage.listen((message) {
-      print('New notification received! Refreshing orders...');
+    _notificationService?.onMessage.listen((_) {
       fetchOrders();
     });
   }
 
   Future<void> fetchOrders() async {
+    if (_loading) return;
     _loading = true;
     notifyListeners();
-    try {
-      print('Fetching available orders from: /api/orders/delivery/available');
-      final List<dynamic> data = await _apiService.request('/api/orders/delivery/available');
-      print('Received ${data.length} available orders');
-      _availableOrders = data.map((json) {
-        try {
-          return Order.fromJson(json);
-        } catch (e) {
-          print('Error parsing order JSON: $e');
-          print('JSON data: $json');
-          rethrow;
-        }
-      }).toList();
-      
-      final List<dynamic> activeData = await _apiService.request('/api/orders/delivery/active');
-      _activeOrders = activeData.map((json) => Order.fromJson(json)).toList();
 
-      final List<dynamic> completedData = await _apiService.request('/api/orders/delivery/history');
-      _completedOrders = completedData.map((json) => Order.fromJson(json)).toList();
+    try {
+      final List<dynamic> data = await _apiService.request('/api/driver/orders');
+      final allOrders = data.map((json) => Order.fromJson(json)).toList();
+
+      _availableOrders = allOrders
+          .where((o) => ['pending', 'confirmed'].contains(o.status))
+          .toList();
+
+      _activeOrders = allOrders
+          .where((o) =>
+              o.driverId == _currentUserId &&
+              ['accepted', 'picked_up', 'in_transit'].contains(o.status))
+          .toList();
+
+      _completedOrders = allOrders
+          .where((o) => o.driverId == _currentUserId && o.status == 'delivered')
+          .toList();
     } catch (e) {
-      print('FATAL Error fetching orders: $e');
+      print('[OrderProvider] fetchOrders failed: $e');
     } finally {
       _loading = false;
       notifyListeners();
     }
   }
 
-  Future<void> updateOrderStatus(String orderId, String status) async {
-    try {
-      await _apiService.request(
-        '/api/orders/$orderId/status',
-        method: 'PATCH',
-        body: {'status': status},
-      );
-      await fetchOrders();
-    } catch (e) {
-      rethrow;
-    }
+  Future<void> acceptOrder(String orderId) async {
+    await _apiService.request('/api/driver/orders/$orderId/accept', method: 'POST');
+    await fetchOrders();
   }
 
-  Future<void> acceptOrder(String orderId) async {
-    await updateOrderStatus(orderId, 'accepted');
+  Future<void> updateOrderStatus(String orderId, String status) async {
+    await _apiService.request(
+      '/api/driver/orders/$orderId/status',
+      method: 'PATCH',
+      body: {'status': status},
+    );
+    await fetchOrders();
+  }
+
+  Future<void> setAvailability(bool available) async {
+    await _apiService.request(
+      '/api/auth/profile',
+      method: 'PATCH',
+      body: {'is_available': available},
+    );
   }
 }
