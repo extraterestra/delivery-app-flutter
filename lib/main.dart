@@ -1,8 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
+import 'config/env_config.dart';
 import 'providers/auth_provider.dart';
 import 'providers/order_provider.dart';
+import 'providers/locale_provider.dart';
 import 'services/notification_service.dart';
 import 'screens/auth_screen.dart';
 import 'screens/orders_screen.dart';
@@ -11,28 +17,26 @@ import 'screens/dashboard_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize Firebase first (required for NotificationService)
+  await initializeDateFormatting('pl', null);
+  await initializeDateFormatting('en', null);
+
+  const String env = String.fromEnvironment('ENVIRONMENT', defaultValue: 'staging');
+  EnvConfig.init((env == 'prod' || env == 'production') ? Environment.production : Environment.staging);
+  
   try {
-    await Firebase.initializeApp();
+    if (!kIsWeb) {
+      await Firebase.initializeApp();
+    }
   } catch (e) {
-    print('Firebase initialization warning: $e');
+    debugPrint('Firebase initialization warning: $e');
   }
 
   final notificationService = NotificationService();
 
-  // Defer notification service initialization until after the UI is visible
-  // to avoid blocking system services during cold startup.
-  void _deferredInit() async {
-    try {
-      await notificationService.init();
-    } catch (e) {
-      print('Notification service init failed: $e');
-    }
-  }
-
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProxyProvider<AuthProvider, OrderProvider>(
           create: (_) => OrderProvider(notificationService),
@@ -46,8 +50,6 @@ void main() async {
       child: const MyApp(),
     ),
   );
-  // Start deferred initialization (non-blocking)
-  _deferredInit();
 }
 
 class MyApp extends StatelessWidget {
@@ -55,13 +57,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localeProvider = Provider.of<LocaleProvider>(context);
+
     return MaterialApp(
-      title: 'Rabka Dostawa',
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
+      locale: localeProvider.locale,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         useMaterial3: true,
       ),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const AuthWrapper(),
     );
   }

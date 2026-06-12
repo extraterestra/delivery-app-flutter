@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
+
+import '../providers/locale_provider.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -53,14 +56,30 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final localeProvider = Provider.of<LocaleProvider>(context);
+    
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          TextButton.icon(
+            onPressed: () => localeProvider.toggleLocale(),
+            icon: const Icon(LucideIcons.languages, size: 20, color: Colors.orange),
+            label: Text(
+              localeProvider.locale.languageCode.toUpperCase(),
+              style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             children: [
-              const SizedBox(height: 40),
               // Logo
               Center(
                 child: Column(
@@ -83,13 +102,13 @@ class _AuthScreenState extends State<AuthScreen> {
                       child: const Icon(LucideIcons.truck, size: 40, color: Colors.white),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Rabka Dostawa',
-                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    Text(
+                      l10n.appTitle,
+                      style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
-                    const Text(
-                      'Panel kierowcy',
-                      style: TextStyle(color: Colors.grey),
+                    Text(
+                      l10n.driverPanel,
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
@@ -115,7 +134,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'Logowanie',
+                              l10n.login,
                               style: TextStyle(
                                 fontWeight: _isLogin ? FontWeight.bold : FontWeight.normal,
                               ),
@@ -136,7 +155,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'Rejestracja',
+                              l10n.register,
                               style: TextStyle(
                                 fontWeight: !_isLogin ? FontWeight.bold : FontWeight.normal,
                               ),
@@ -157,20 +176,20 @@ class _AuthScreenState extends State<AuthScreen> {
                     if (!_isLogin) ...[
                       TextFormField(
                         controller: _fullNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Imię i nazwisko',
-                          prefixIcon: Icon(LucideIcons.user),
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l10n.fullName,
+                          prefixIcon: const Icon(LucideIcons.user),
+                          border: const OutlineInputBorder(),
                         ),
-                        validator: (v) => v!.isEmpty ? 'Podaj imię i nazwisko' : null,
+                        validator: (v) => v!.isEmpty ? l10n.errorFullName : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _phoneController,
-                        decoration: const InputDecoration(
-                          labelText: 'Numer telefonu',
-                          prefixIcon: Icon(LucideIcons.phone),
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l10n.phone,
+                          prefixIcon: const Icon(LucideIcons.phone),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -178,23 +197,23 @@ class _AuthScreenState extends State<AuthScreen> {
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(LucideIcons.mail),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.email,
+                        prefixIcon: const Icon(LucideIcons.mail),
+                        border: const OutlineInputBorder(),
                       ),
-                      validator: (v) => v!.isEmpty ? 'Podaj email' : null,
+                      validator: (v) => v!.isEmpty ? l10n.errorEmail : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Hasło',
-                        prefixIcon: Icon(LucideIcons.lock),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n.password,
+                        prefixIcon: const Icon(LucideIcons.lock),
+                        border: const OutlineInputBorder(),
                       ),
-                      validator: (v) => v!.length < 6 ? 'Hasło musi mieć min. 6 znaków' : null,
+                      validator: (v) => v!.length < 6 ? l10n.errorPassword : null,
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
@@ -209,7 +228,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                         child: _isLoading
                             ? const CircularProgressIndicator(color: Colors.white)
-                            : Text(_isLogin ? 'Zaloguj się' : 'Zarejestruj się', style: const TextStyle(fontSize: 18)),
+                            : Text(_isLogin ? l10n.signIn : l10n.signUp, style: const TextStyle(fontSize: 18)),
                       ),
                     ),
                   ],
@@ -221,7 +240,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   onPressed: () {
                     // TODO: Reset password
                   },
-                  child: const Text('Zapomniałeś hasła?'),
+                  child: Text(l10n.forgotPassword),
                 ),
             ],
           ),

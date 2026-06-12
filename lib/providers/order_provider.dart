@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../models/order_model.dart';
+import '../models/order_history.dart';
 import '../services/api_service.dart';
 import '../services/notification_service.dart';
 
@@ -10,6 +11,7 @@ class OrderProvider with ChangeNotifier {
   List<Order> _availableOrders = [];
   List<Order> _activeOrders = [];
   List<Order> _completedOrders = [];
+  List<OrderHistory> _orderHistory = [];
   bool _loading = false;
   Timer? _pollTimer;
   static const int _pollIntervalSeconds = 15;
@@ -18,6 +20,7 @@ class OrderProvider with ChangeNotifier {
   List<Order> get availableOrders => _availableOrders;
   List<Order> get activeOrders => _activeOrders;
   List<Order> get completedOrders => _completedOrders;
+  List<OrderHistory> get orderHistory => _orderHistory;
   bool get loading => _loading;
 
   double get todayEarnings {
@@ -95,12 +98,29 @@ class OrderProvider with ChangeNotifier {
       _completedOrders = allOrders
           .where((o) => o.driverId == _currentUserId && o.status == 'delivered')
           .toList();
+      
+      // Update local history from the same list as the backend doesn't have a separate endpoint
+      _orderHistory = _completedOrders.map<OrderHistory>((o) => OrderHistory(
+        id: o.id,
+        orderNumber: o.id.substring(0, 8).toUpperCase(), // Usamos parte del ID como número de orden
+        restaurantName: o.restaurant?.name ?? 'Restaurant',
+        deliveryAddress: o.customerAddress,
+        amount: o.driverPayoutAmount ?? o.deliveryFee,
+        status: o.status,
+        date: o.deliveredAt ?? DateTime.now(),
+      )).toList();
+
     } catch (e) {
-      print('[OrderProvider] fetchOrders failed: $e');
+      debugPrint('[OrderProvider] fetchOrders failed: $e');
     } finally {
       _loading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> fetchOrderHistory() async {
+    // History is now updated within fetchOrders locally
+    return;
   }
 
   Future<void> acceptOrder(String orderId) async {

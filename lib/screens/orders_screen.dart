@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
+import '../l10n/app_localizations.dart';
 import '../providers/order_provider.dart';
 import '../providers/auth_provider.dart';
 import '../models/order_model.dart';
@@ -26,10 +27,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
   Widget build(BuildContext context) {
     final orderProvider = Provider.of<OrderProvider>(context);
     final authProvider = Provider.of<AuthProvider>(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Zamówienia', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(l10n.orders, style: const TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -56,7 +58,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   children: [
                     if (orderProvider.activeOrders.isNotEmpty) ...[
                       _SectionHeader(
-                        title: 'Aktywne dostawy',
+                        title: l10n.activeDeliveries,
                         count: orderProvider.activeOrders.length,
                         icon: LucideIcons.clock,
                         iconColor: Colors.orange,
@@ -74,14 +76,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       const SizedBox(height: 24),
                     ],
                     _SectionHeader(
-                      title: 'Dostępne zamówienia',
+                      title: l10n.availableOrders,
                       count: orderProvider.availableOrders.length,
                       icon: LucideIcons.package,
                       iconColor: Colors.orangeAccent,
                     ),
                     const SizedBox(height: 12),
                     if (orderProvider.availableOrders.isEmpty)
-                      _NoOrdersWidget()
+                      const _NoOrdersWidget()
                     else
                       ...orderProvider.availableOrders.map((order) => _OrderCard(
                             order: order,
@@ -140,6 +142,7 @@ class _OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final timeFormat = DateFormat('HH:mm');
+    final l10n = AppLocalizations.of(context)!;
 
     return GestureDetector(
       onTap: onTap,
@@ -178,7 +181,7 @@ class _OrderCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                order.restaurant?.name ?? 'Restauracja',
+                order.restaurant?.name ?? l10n.restaurant,
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
@@ -224,7 +227,7 @@ class _OrderCard extends StatelessWidget {
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: const Text('Przyjmij zamówienie'),
+                    child: Text(l10n.acceptOrder),
                   ),
                 ),
               ]
@@ -238,7 +241,7 @@ class _OrderCard extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'pending': return Colors.orange;
-      case 'ready': return Colors.green; // Añadido para SCRUM-122
+      case 'ready': return Colors.green;
       case 'accepted': return Colors.blue;
       case 'picked_up': return Colors.purple;
       case 'delivered': return Colors.grey;
@@ -248,8 +251,11 @@ class _OrderCard extends StatelessWidget {
 }
 
 class _NoOrdersWidget extends StatelessWidget {
+  const _NoOrdersWidget();
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 40),
@@ -257,17 +263,17 @@ class _NoOrdersWidget extends StatelessWidget {
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(16),
       ),
-      child: const Column(
+      child: Column(
         children: [
-          Icon(LucideIcons.package, size: 48, color: Colors.grey),
-          SizedBox(height: 16),
+          const Icon(LucideIcons.package, size: 48, color: Colors.grey),
+          const SizedBox(height: 16),
           Text(
-            'Brak dostępnych zamówień',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            l10n.noAvailableOrders,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(
-            'Spróbuj odświeżyć za chwilę',
-            style: TextStyle(color: Colors.grey),
+            l10n.tryRefreshingLater,
+            style: const TextStyle(color: Colors.grey),
           ),
         ],
       ),

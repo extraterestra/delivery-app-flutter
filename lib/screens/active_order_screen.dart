@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../l10n/app_localizations.dart';
 import '../models/order_model.dart';
 import '../providers/order_provider.dart';
 
@@ -16,6 +17,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
   bool _isUpdating = false;
 
   Future<void> _updateStatus(String newStatus) async {
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _isUpdating = true);
     try {
       await Provider.of<OrderProvider>(context, listen: false)
@@ -25,7 +27,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Błąd: $e')),
+        SnackBar(content: Text(l10n.errorMessage(e.toString()))),
       );
     } finally {
       if (mounted) setState(() => _isUpdating = false);
@@ -35,6 +37,8 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
   @override
   Widget build(BuildContext context) {
     final orderProvider = Provider.of<OrderProvider>(context);
+    final l10n = AppLocalizations.of(context)!;
+    
     // Find current state of the order in the provider
     final currentOrder = orderProvider.activeOrders.firstWhere(
       (o) => o.id == widget.order.id,
@@ -43,7 +47,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aktywna dostawa'),
+        title: Text(l10n.activeDelivery),
       ),
       body: Stack(
         children: [
@@ -55,7 +59,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                 _StatusTimeline(status: currentOrder.status),
                 const SizedBox(height: 24),
                 _InfoCard(
-                  title: 'Odbiór z:',
+                  title: l10n.pickupFrom,
                   name: currentOrder.restaurant?.name ?? '',
                   address: currentOrder.restaurant?.address ?? '',
                   icon: LucideIcons.store,
@@ -63,7 +67,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                 ),
                 const SizedBox(height: 16),
                 _InfoCard(
-                  title: 'Dostawa do:',
+                  title: l10n.deliveryTo,
                   name: currentOrder.customerName,
                   address: currentOrder.customerAddress,
                   icon: LucideIcons.mapPin,
@@ -99,6 +103,7 @@ class _StatusTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -109,17 +114,17 @@ class _StatusTimeline extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Status dostawy', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(l10n.deliveryStatus, style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
-          _Step(label: 'Zamówienie przyjęte', isActive: true, isDone: true),
+          _Step(label: l10n.orderAccepted, isActive: true, isDone: true),
           _Connector(isDone: status != 'accepted'),
           _Step(
-            label: 'Odebrane z restauracji',
+            label: l10n.pickedUpFromRestaurant,
             isActive: status == 'picked_up',
             isDone: status == 'picked_up' || status == 'delivered',
           ),
           _Connector(isDone: status == 'delivered'),
-          _Step(label: 'Dostarczone klientowi', isActive: status == 'delivered', isDone: status == 'delivered'),
+          _Step(label: l10n.deliveredToCustomer, isActive: status == 'delivered', isDone: status == 'delivered'),
         ],
       ),
     );
@@ -225,6 +230,7 @@ class _DetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(16),
       width: double.infinity,
@@ -235,11 +241,11 @@ class _DetailsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(LucideIcons.package, size: 16),
-              SizedBox(width: 8),
-              Text('Szczegóły', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Icon(LucideIcons.package, size: 16),
+              const SizedBox(width: 8),
+              Text(l10n.details, style: const TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 8),
@@ -263,6 +269,8 @@ class _ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     if (status == 'accepted') {
       return SizedBox(
         width: double.infinity,
@@ -270,7 +278,7 @@ class _ActionButtons extends StatelessWidget {
         child: ElevatedButton.icon(
           onPressed: isUpdating ? null : () => onUpdate('picked_up'),
           icon: const Icon(LucideIcons.store),
-          label: const Text('Odebrałem zamówienie', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          label: Text(l10n.iHavePickedUpOrder, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.orange,
             foregroundColor: Colors.white,
@@ -287,7 +295,7 @@ class _ActionButtons extends StatelessWidget {
         child: ElevatedButton.icon(
           onPressed: isUpdating ? null : () => onUpdate('delivered'),
           icon: const Icon(LucideIcons.checkCircle),
-          label: const Text('Dostarczone klientowi', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          label: Text(l10n.deliveredToCustomer, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
             foregroundColor: Colors.white,
