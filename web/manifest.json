@@ -1,11 +1,11 @@
 {
-    "name": "hello_world",
-    "short_name": "hello_world",
+    "name": "Rabka Dostawa",
+    "short_name": "Dostawa",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "Mi primera app Flutter",
+    "background_color": "#FF9800",
+    "theme_color": "#FF9800",
+    "description": "Aplikacja kurierska - Rabka Dostawa",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
 
 class NotificationService {
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  FirebaseMessaging? _fcm;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
   
   // Stream to notify listeners (like OrderProvider) about new order updates
@@ -12,8 +12,21 @@ class NotificationService {
   Stream<RemoteMessage> get onMessage => _onMessageController.stream;
 
   Future<void> init() async {
+    FirebaseMessaging? fcmInstance;
+    try {
+      fcmInstance = FirebaseMessaging.instance;
+      _fcm = fcmInstance;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Firebase Messaging not supported or initialized: $e');
+      }
+      return;
+    }
+
+    if (fcmInstance == null) return;
+
     // Request permission
-    NotificationSettings settings = await _fcm.requestPermission(
+    NotificationSettings settings = await fcmInstance.requestPermission(
       alert: true,
       badge: true,
       sound: true,
@@ -25,7 +38,7 @@ class NotificationService {
       }
       
       // Get token for backend integration
-      String? token = await _fcm.getToken();
+      String? token = await fcmInstance.getToken();
       if (kDebugMode) {
         print("FCM Token: $token");
       }

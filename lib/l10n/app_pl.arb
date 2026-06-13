@@ -1,0 +1,97 @@
+{
+  "appTitle": "Rabka Dostawa",
+  "welcome": "Witaj, {name}!",
+  "@welcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "login": "Logowanie",
+  "register": "Rejestracja",
+  "fullName": "Imię i nazwisko",
+  "phone": "Numer telefonu",
+  "email": "Email",
+  "password": "Hasło",
+  "signIn": "Zaloguj się",
+  "signUp": "Zarejestruj się",
+  "forgotPassword": "Zapomniałeś hasła?",
+  "driverPanel": "Panel kierowcy",
+  "activeDeliveries": "Aktywne dostawy",
+  "noActiveDeliveries": "Brak aktywnych dostaw",
+  "youHaveActiveDeliveries": "Masz {count} aktywną dostawę",
+  "@youHaveActiveDeliveries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "today": "Dzisiaj",
+  "total": "Łącznie",
+  "deliveries": "dostaw",
+  "quickActions": "Szybkie działania",
+  "availableOrders": "Dostępne zamówienia",
+  "activeDelivery": "Aktywna dostawa",
+  "orderHistory": "Historia dostaw",
+  "historyDescription": "{count} ukończonych",
+  "@historyDescription": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driver": "Kierowco",
+  "pendingOrders": "{count} oczekujących",
+  "@pendingOrders": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clickToContinue": "Kliknij, aby kontynuować",
+  "orders": "Zamówienia",
+  "noAvailableOrders": "Brak dostępnych zamówień",
+  "tryRefreshingLater": "Spróbuj odświeżyć za chwilę",
+  "acceptOrder": "Przyjmij zamówienie",
+  "restaurant": "Restauracja",
+  "unknownAddress": "Adres nieznany",
+  "totalEarnings": "Łączne zarobki",
+  "completedDeliveriesCount": "{count} ukończonych dostaw",
+  "@completedDeliveriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noCompletedDeliveries": "Brak ukończonych dostaw",
+  "paid": "Zapłacono",
+  "pending": "Oczekuje",
+  "deliveryStatus": "Status dostawy",
+  "orderAccepted": "Zamówienie przyjęte",
+  "pickedUpFromRestaurant": "Odebrane z restauracji",
+  "deliveredToCustomer": "Dostarczone klientowi",
+  "pickupFrom": "Odbiór z:",
+  "deliveryTo": "Dostawa do:",
+  "details": "Szczegóły",
+  "iHavePickedUpOrder": "Odebrałem zamówienie",
+  "signOut": "Wyloguj się",
+  "signOutConfirmation": "Czy na pewno chcesz się wylogować?",
+  "cancel": "Anuluj",
+  "error": "Błąd",
+  "errorFullName": "Podaj imię i nazwisko",
+  "errorEmail": "Podaj email",
+  "errorPassword": "Hasło musi mieć min. 6 znaków",
+  "errorMessage": "Błąd: {error}",
+  "@errorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
+}

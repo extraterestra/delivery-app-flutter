@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
 import 'orders_screen.dart';
+import 'order_history_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -26,6 +28,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final authProvider = context.watch<AuthProvider>();
     final orderProvider = context.watch<OrderProvider>();
     final profile = authProvider.profile;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -56,7 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Witaj, ${profile?.fullName.split(' ')[0] ?? 'Kierowco'}!',
+                            l10n.welcome(profile?.fullName.split(' ')[0] ?? l10n.driver),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 24,
@@ -66,8 +69,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           const SizedBox(height: 4),
                           Text(
                             orderProvider.activeOrders.isEmpty
-                                ? 'Brak aktywnych dostaw'
-                                : 'Masz ${orderProvider.activeOrders.length} aktywną dostawę',
+                                ? l10n.noActiveDeliveries
+                                : l10n.youHaveActiveDeliveries(orderProvider.activeOrders.length),
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.9),
                               fontSize: 14,
@@ -75,10 +78,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ],
                       ),
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Colors.white.withOpacity(0.2),
-                        child: const Icon(LucideIcons.user, color: Colors.white),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(l10n.signOut),
+                              content: Text(l10n.signOutConfirmation),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(l10n.cancel),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    authProvider.signOut();
+                                  },
+                                  child: Text(
+                                    l10n.signOut,
+                                    style: const TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: Colors.white.withOpacity(0.2),
+                          child: const Icon(LucideIcons.user, color: Colors.white),
+                        ),
                       ),
                     ],
                   ),
@@ -95,9 +125,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     Expanded(
                       child: _buildStatCard(
-                        'Dzisiaj',
+                        l10n.today,
                         '${orderProvider.todayEarnings.toStringAsFixed(2)} zł',
-                        '${orderProvider.todayDeliveriesCount} dostaw',
+                        '${orderProvider.todayDeliveriesCount} ${l10n.deliveries}',
                         LucideIcons.dollarSign,
                         Colors.orange,
                       ),
@@ -105,9 +135,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _buildStatCard(
-                        'Łącznie',
+                        l10n.total,
                         '${profile?.totalEarnings.toStringAsFixed(2) ?? '0.00'} zł',
-                        '${orderProvider.completedOrders.length} dostaw',
+                        '${orderProvider.completedOrders.length} ${l10n.deliveries}',
                         LucideIcons.trendingUp,
                         Colors.blue,
                       ),
@@ -123,16 +153,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Szybkie działania',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    l10n.quickActions,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
 
                   // Available Orders Card
                   _buildActionCard(
-                    'Dostępne zamówienia',
-                    '${orderProvider.availableOrders.length} oczekujących',
+                    l10n.availableOrders,
+                    l10n.pendingOrders(orderProvider.availableOrders.length),
                     LucideIcons.package,
                     Colors.amber,
                     onTap: () => Navigator.push(
@@ -147,8 +177,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   // Active Delivery Card (Show only if active)
                   if (orderProvider.activeOrders.isNotEmpty)
                     _buildActionCard(
-                      'Aktywna dostawa',
-                      'Kliknij, aby kontynuować',
+                      l10n.activeDelivery,
+                      l10n.clickToContinue,
                       LucideIcons.clock,
                       Colors.orange,
                       onTap: () => Navigator.push(
@@ -162,13 +192,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                   // History Card
                   _buildActionCard(
-                    'Historia dostaw',
-                    '${orderProvider.completedOrders.length} ukończonych',
+                    l10n.orderHistory,
+                    l10n.historyDescription(orderProvider.completedOrders.length),
                     LucideIcons.checkCircle,
                     Colors.green,
-                    onTap: () {
-                      // TODO: Implement History Screen
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
+                    ),
                   ),
                 ],
               ),

@@ -38,6 +38,32 @@ The app is currently configured to connect to a local backend.
 3. Launch your emulator or connect a device.
 4. Run `flutter run`.
 
+### Environment Configuration
+
+The application uses environment variables to switch between **Staging** and **Production** backends. This is managed via `--dart-define=ENVIRONMENT`.
+
+#### 1. Running the App
+- **Staging (Default):**
+  ```powershell
+  flutter run --dart-define=ENVIRONMENT=staging
+  ```
+- **Production:**
+  ```powershell
+  flutter run --dart-define=ENVIRONMENT=production
+  ```
+
+#### 2. Building the App (APK)
+- **Staging APK:**
+  ```powershell
+  flutter build apk --dart-define=ENVIRONMENT=staging
+  ```
+- **Production APK:**
+  ```powershell
+  flutter build apk --dart-define=ENVIRONMENT=production
+  ```
+
+---
+
 ## 📁 Project Structure
 - `lib/models/`: Data structures for Auth and User Profiles.
 - `lib/providers/`: Business logic and state management.

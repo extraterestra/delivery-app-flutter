@@ -1,0 +1,97 @@
+{
+  "appTitle": "Rabka Delivery",
+  "welcome": "Welcome, {name}!",
+  "@welcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "login": "Login",
+  "register": "Register",
+  "fullName": "Full name",
+  "phone": "Phone number",
+  "email": "Email",
+  "password": "Password",
+  "signIn": "Sign In",
+  "signUp": "Sign Up",
+  "forgotPassword": "Forgot password?",
+  "driverPanel": "Driver Panel",
+  "activeDeliveries": "Active deliveries",
+  "noActiveDeliveries": "No active deliveries",
+  "youHaveActiveDeliveries": "You have {count} active delivery",
+  "@youHaveActiveDeliveries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "today": "Today",
+  "total": "Total",
+  "deliveries": "deliveries",
+  "quickActions": "Quick Actions",
+  "availableOrders": "Available Orders",
+  "activeDelivery": "Active Delivery",
+  "orderHistory": "Order History",
+  "historyDescription": "{count} completed",
+  "@historyDescription": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driver": "Driver",
+  "pendingOrders": "{count} pending",
+  "@pendingOrders": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clickToContinue": "Click to continue",
+  "orders": "Orders",
+  "noAvailableOrders": "No available orders",
+  "tryRefreshingLater": "Try refreshing in a moment",
+  "acceptOrder": "Accept order",
+  "restaurant": "Restaurant",
+  "unknownAddress": "Unknown address",
+  "totalEarnings": "Total earnings",
+  "completedDeliveriesCount": "{count} completed deliveries",
+  "@completedDeliveriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noCompletedDeliveries": "No completed deliveries",
+  "paid": "Paid",
+  "pending": "Pending",
+  "deliveryStatus": "Delivery status",
+  "orderAccepted": "Order accepted",
+  "pickedUpFromRestaurant": "Picked up from restaurant",
+  "deliveredToCustomer": "Delivered to customer",
+  "pickupFrom": "Pickup from:",
+  "deliveryTo": "Delivery to:",
+  "details": "Details",
+  "iHavePickedUpOrder": "I have picked up the order",
+  "signOut": "Sign Out",
+  "signOutConfirmation": "Are you sure you want to sign out?",
+  "cancel": "Cancel",
+  "error": "Error",
+  "errorFullName": "Please enter full name",
+  "errorEmail": "Please enter email",
+  "errorPassword": "Password must be at least 6 characters",
+  "errorMessage": "Error: {error}",
+  "@errorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
+}

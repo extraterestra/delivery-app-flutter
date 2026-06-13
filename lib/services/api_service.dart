@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../config/env_config.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://delivery-app-staging-backend.up.railway.app';
+  String get baseUrl => EnvConfig.baseUrl;
   final _storage = const FlutterSecureStorage();
   String? _token;
 
