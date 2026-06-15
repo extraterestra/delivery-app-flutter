@@ -178,13 +178,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   if (orderProvider.activeOrders.isNotEmpty)
                     _buildActionCard(
                       l10n.activeDelivery,
-                      l10n.clickToContinue,
+                      l10n.youHaveActiveDeliveries(orderProvider.activeOrders.length),
                       LucideIcons.clock,
                       Colors.orange,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const OrdersScreen()),
                       ),
+                      badge: orderProvider.activeOrders.length,
                       isPrimary: true,
                     ),
 
