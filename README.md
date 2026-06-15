@@ -45,8 +45,13 @@ The application uses environment variables to switch between **Staging** and **P
 
 #### 1. Running the App
 - **Staging (Default):**
-  ```powershell
+  Run the app on emulator:
+```powershell
   flutter run --dart-define=ENVIRONMENT=staging
+```
+  Build the app for staging:
+```powershell
+  flutter build apk --debug --dart-define=ENVIRONMENT=staging
   ```
 - **Production:**
   ```powershell
