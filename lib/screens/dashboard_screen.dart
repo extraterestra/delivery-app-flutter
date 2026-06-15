@@ -136,8 +136,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Expanded(
                       child: _buildStatCard(
                         l10n.total,
-                        '${profile?.totalEarnings.toStringAsFixed(2) ?? '0.00'} zł',
-                        '${orderProvider.completedOrders.length} ${l10n.deliveries}',
+                        '${orderProvider.totalEarnings.toStringAsFixed(2)} zł',
+                        '${orderProvider.totalDeliveriesCount} ${l10n.deliveries}',
                         LucideIcons.trendingUp,
                         Colors.blue,
                       ),
