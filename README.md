@@ -34,6 +34,7 @@ The app is currently configured to connect to a local backend.
 
 ### Running the App:
 1. Clone the repository.
+2. Run `flutter clean` to remove any previous build artifacts.
 2. Run `flutter pub get` to install dependencies.
 3. Launch your emulator or connect a device.
 4. Run `flutter run`.
