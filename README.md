@@ -38,29 +38,37 @@ The app is currently configured to connect to a local backend.
 3. Launch your emulator or connect a device.
 4. Run `flutter run`.
 
-### Environment Configuration
+### Environment Configuration (Flavors)
 
-The application uses environment variables to switch between **Staging** and **Production** backends. This is managed via `--dart-define=ENVIRONMENT`.
+The application uses **Flutter Flavors** to manage different environments. This allows having both Staging and Production versions installed on the same device simultaneously.
 
-#### 1. Running the App
-- **Staging (Default):**
+#### 1. Running the App with Flavors
+- **Staging (App Name: Rabka STG):**
   ```powershell
-  flutter run --dart-define=ENVIRONMENT=staging
+  flutter run --flavor staging
   ```
-- **Production:**
+- **Production (App Name: Rabka Dostawa):**
   ```powershell
-  flutter run --dart-define=ENVIRONMENT=production
+  flutter run --flavor production
   ```
 
 #### 2. Building the App (APK)
 - **Staging APK:**
   ```powershell
-  flutter build apk --dart-define=ENVIRONMENT=staging
+  flutter build apk --flavor staging
   ```
 - **Production APK:**
   ```powershell
-  flutter build apk --dart-define=ENVIRONMENT=production
+  flutter build apk --flavor production
   ```
+
+#### 3. Automatic Environment Detection
+The app automatically detects the flavor it was built with. It uses `MethodChannel('flutter/platform').invokeMethod('getFlavor')` to determine whether to use the Staging or Production backend URL.
+
+| Environment | Flavor Name | Package ID | Backend URL |
+|-------------|-------------|------------|-------------|
+| Staging | `staging` | `com.rabka.dostawa.staging` | `delivery-app-staging-backend` |
+| Production | `production` | `com.rabka.dostawa` | `delivery-app-prod-backend` |
 
 ---
 
@@ -69,6 +77,7 @@ The application uses environment variables to switch between **Staging** and **P
 - `lib/providers/`: Business logic and state management.
 - `lib/screens/`: UI Screens (Auth, Dashboard).
 - `lib/services/`: API communication layer.
+- `lib/config/env_config.dart`: Environment-specific URLs.
 
 ---
 *This project is part of a migration study from Web to Flutter for the Rabka Dostawa team.*
