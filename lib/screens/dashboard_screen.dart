@@ -136,8 +136,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Expanded(
                       child: _buildStatCard(
                         l10n.total,
-                        '${profile?.totalEarnings.toStringAsFixed(2) ?? '0.00'} zł',
-                        '${orderProvider.completedOrders.length} ${l10n.deliveries}',
+                        '${orderProvider.totalEarnings.toStringAsFixed(2)} zł',
+                        '${orderProvider.totalDeliveriesCount} ${l10n.deliveries}',
                         LucideIcons.trendingUp,
                         Colors.blue,
                       ),
@@ -178,13 +178,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   if (orderProvider.activeOrders.isNotEmpty)
                     _buildActionCard(
                       l10n.activeDelivery,
-                      l10n.clickToContinue,
+                      l10n.youHaveActiveDeliveries(orderProvider.activeOrders.length),
                       LucideIcons.clock,
                       Colors.orange,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const OrdersScreen()),
                       ),
+                      badge: orderProvider.activeOrders.length,
                       isPrimary: true,
                     ),
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:intl/intl.dart';
 import '../models/order_model.dart';
 import '../models/order_history.dart';
 import '../services/api_service.dart';
@@ -23,24 +24,62 @@ class OrderProvider with ChangeNotifier {
   List<OrderHistory> get orderHistory => _orderHistory;
   bool get loading => _loading;
 
-  double get todayEarnings {
-    final now = DateTime.now();
-    return _completedOrders.where((order) {
-      if (order.deliveredAt == null) return false;
-      return order.deliveredAt!.year == now.year &&
-          order.deliveredAt!.month == now.month &&
-          order.deliveredAt!.day == now.day;
-    }).fold(0.0, (sum, order) => sum + (order.driverPayoutAmount ?? order.deliveryFee));
+  bool _isSameLocalDay(DateTime first, DateTime second) {
+    return first.year == second.year &&
+        first.month == second.month &&
+        first.day == second.day;
   }
 
-  int get todayDeliveriesCount {
+  double _orderAmount(Order order) => order.driverPayoutAmount ?? order.deliveryFee;
+
+  List<Order> get todayCompletedOrders {
     final now = DateTime.now();
     return _completedOrders.where((order) {
-      if (order.deliveredAt == null) return false;
-      return order.deliveredAt!.year == now.year &&
-          order.deliveredAt!.month == now.month &&
-          order.deliveredAt!.day == now.day;
-    }).length;
+      final deliveredAt = order.deliveredAt;
+      return deliveredAt != null && _isSameLocalDay(deliveredAt.toLocal(), now);
+    }).toList();
+  }
+
+  double get todayEarnings {
+    return todayCompletedOrders.fold(0.0, (sum, order) => sum + _orderAmount(order));
+  }
+
+  int get todayDeliveriesCount => todayCompletedOrders.length;
+
+  double get totalEarnings {
+    return _completedOrders.fold(0.0, (sum, order) => sum + _orderAmount(order));
+  }
+
+  int get totalDeliveriesCount => _completedOrders.length;
+
+  Map<String, List<Order>> groupedCompletedOrdersByDate(String locale) {
+    final groupedOrders = <String, List<Order>>{};
+
+    for (final order in _completedOrders) {
+      final deliveredAt = order.deliveredAt;
+      if (deliveredAt == null) continue;
+
+      final localDeliveredAt = deliveredAt.toLocal();
+      final dateKey = DateFormat('d MMM yyyy', locale).format(localDeliveredAt);
+      groupedOrders.putIfAbsent(dateKey, () => []).add(order);
+    }
+
+    return groupedOrders;
+  }
+
+  List<String> sortedCompletedOrderDateKeys(String locale) {
+    final groupedOrders = groupedCompletedOrdersByDate(locale);
+    final sortedDates = groupedOrders.keys.toList();
+    sortedDates.sort((a, b) {
+      final dateA = groupedOrders[a]!.first.deliveredAt!.toLocal();
+      final dateB = groupedOrders[b]!.first.deliveredAt!.toLocal();
+      return dateB.compareTo(dateA);
+    });
+    return sortedDates;
+  }
+
+  double completedOrderGroupEarnings(List<Order> orders) {
+    return orders.fold(0.0, (sum, order) => sum + _orderAmount(order));
   }
 
   OrderProvider([this._notificationService]) {

@@ -16,6 +16,7 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   bool _isLogin = true;
   bool _isLoading = false;
+  bool _isPasswordVisible = false;
   final _formKey = GlobalKey<FormState>();
   
   final _emailController = TextEditingController();
@@ -207,10 +208,18 @@ class _AuthScreenState extends State<AuthScreen> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
-                      obscureText: true,
+                      obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
                         labelText: l10n.password,
                         prefixIcon: const Icon(LucideIcons.lock),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() => _isPasswordVisible = !_isPasswordVisible);
+                          },
+                          icon: Icon(
+                            _isPasswordVisible ? LucideIcons.eyeOff : LucideIcons.eye,
+                          ),
+                        ),
                         border: const OutlineInputBorder(),
                       ),
                       validator: (v) => v!.length < 6 ? l10n.errorPassword : null,
