@@ -34,9 +34,10 @@ The app is currently configured to connect to a local backend.
 
 ### Running the App:
 1. Clone the repository.
+2. Run `flutter clean` to remove any previous build artifacts.
 2. Run `flutter pub get` to install dependencies.
 3. Launch your emulator or connect a device.
-4. Run `flutter run`.
+4. Run the app using flavors (see below).
 
 ### Environment Configuration (Flavors)
 
@@ -57,9 +58,13 @@ The application uses **Flutter Flavors** to manage different environments. This 
   ```powershell
   flutter build apk --flavor staging
   ```
-- **Production APK:**
+- **Production APK (Release):**
   ```powershell
   flutter build apk --flavor production
+  ```
+- **Staging Debug APK (For testing):**
+  ```powershell
+  flutter build apk --debug --flavor staging
   ```
 
 #### 3. Automatic Environment Detection

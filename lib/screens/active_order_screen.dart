@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../l10n/app_localizations.dart';
 import '../models/order_model.dart';
+import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
 
 class ActiveOrderScreen extends StatefulWidget {
@@ -22,6 +23,7 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
     try {
       await Provider.of<OrderProvider>(context, listen: false)
           .updateOrderStatus(widget.order.id, newStatus);
+      await Provider.of<AuthProvider>(context, listen: false).fetchMe();
       if (newStatus == 'delivered') {
         Navigator.pop(context);
       }

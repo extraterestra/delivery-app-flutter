@@ -15,28 +15,8 @@ class OrderHistoryScreen extends StatelessWidget {
     final completedOrders = orderProvider.completedOrders;
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).languageCode;
-
-    // Group orders by date
-    Map<String, List<Order>> groupedOrders = {};
-    for (var order in completedOrders) {
-      if (order.deliveredAt != null) {
-        String dateKey = DateFormat('d MMM yyyy', locale).format(order.deliveredAt!);
-        if (!groupedOrders.containsKey(dateKey)) {
-          groupedOrders[dateKey] = [];
-        }
-        groupedOrders[dateKey]!.add(order);
-      }
-    }
-
-    // Sort dates descending
-    var sortedDates = groupedOrders.keys.toList()
-      ..sort((a, b) {
-        var dateA = groupedOrders[a]![0].deliveredAt!;
-        var dateB = groupedOrders[b]![0].deliveredAt!;
-        return dateB.compareTo(dateA);
-      });
-
-    double totalEarnings = completedOrders.fold(0.0, (sum, order) => sum + (order.driverPayoutAmount ?? order.deliveryFee));
+    final groupedOrders = orderProvider.groupedCompletedOrdersByDate(locale);
+    final sortedDates = orderProvider.sortedCompletedOrderDateKeys(locale);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -71,12 +51,12 @@ class OrderHistoryScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${totalEarnings.toStringAsFixed(2)} zł',
+                  '${orderProvider.totalEarnings.toStringAsFixed(2)} zł',
                   style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  l10n.completedDeliveriesCount(completedOrders.length),
+                  l10n.completedDeliveriesCount(orderProvider.totalDeliveriesCount),
                   style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 14),
                 ),
               ],
@@ -92,7 +72,6 @@ class OrderHistoryScreen extends StatelessWidget {
               ),
             ),
 
-          // Grouped Orders
           for (var date in sortedDates) ...[
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -104,7 +83,7 @@ class OrderHistoryScreen extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   Text(
-                    '${groupedOrders[date]!.fold(0.0, (sum, o) => sum + (o.driverPayoutAmount ?? o.deliveryFee)).toStringAsFixed(2)} zł',
+                    '${orderProvider.completedOrderGroupEarnings(groupedOrders[date]!).toStringAsFixed(2)} zł',
                     style: const TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                 ],
@@ -161,7 +140,7 @@ class OrderHistoryScreen extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  order.deliveredAt != null ? DateFormat('HH:mm').format(order.deliveredAt!) : '--:--',
+                  order.deliveredAt != null ? DateFormat('HH:mm').format(order.deliveredAt!.toLocal()) : '--:--',
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
