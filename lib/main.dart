@@ -22,11 +22,11 @@ void main() async {
   await initializeDateFormatting('pl', null);
   await initializeDateFormatting('en', null);
 
-  // Detectar el Flavor desde la plataforma (Android/iOS)
-  final String? flavor = await const MethodChannel('flutter/platform').invokeMethod<String>('getFlavor');
+  // Detectar el Flavor usando la constante estándar de Flutter
+  final String? flavor = appFlavor;
   debugPrint('Running with flavor: $flavor');
 
-  // Si no hay flavor (ej. en web o dev sin flag), usamos staging por defecto
+  // Si el flavor es production usamos esa config, de lo contrario staging
   if (flavor == 'production') {
     EnvConfig.init(Environment.production);
   } else {
