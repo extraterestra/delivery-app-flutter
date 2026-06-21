@@ -10,7 +10,8 @@ We have successfully migrated the core Authentication workflow from the Web proj
 - **Native UI/UX**: Recreated the web interface using Flutter Material 3, maintaining brand consistency (colors, logos, and icons).
 - **Authentication Service**: Complete integration with the existing backend APIs.
 - **State Management**: Implemented using `Provider` to manage user sessions and profiles.
-- **Secure Storage**: JWT tokens are securely stored locally for persistent login.
+- **Remember Me & Persistence**: Implemented secure session persistence. Users can choose to stay logged in, and the app securely remembers credentials (email/password) using `flutter_secure_storage`.
+- **Localization**: Multi-language support (EN/PL) for the entire authentication flow.
 - **Form Validation**: Native mobile form validation for Login and Registration.
 
 ### Technical Stack:
