@@ -175,6 +175,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get errorPassword => 'Hasło musi mieć min. 6 znaków';
 
   @override
+  String get rememberMe => 'Zapamiętaj mnie';
+
+  @override
   String errorMessage(String error) {
     return 'Błąd: $error';
   }

@@ -23,6 +23,30 @@ class _AuthScreenState extends State<AuthScreen> {
   final _passwordController = TextEditingController();
   final _fullNameController = TextEditingController();
   final _phoneController = TextEditingController();
+  bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  void _loadSavedCredentials() async {
+    // We need to wait for the next frame to use context/Provider
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final lastEmail = await authProvider.getLastEmail();
+      final lastPassword = await authProvider.getLastPassword();
+      
+      setState(() {
+        _rememberMe = authProvider.rememberMe;
+        if (_rememberMe) {
+          if (lastEmail != null) _emailController.text = lastEmail;
+          if (lastPassword != null) _passwordController.text = lastPassword;
+        }
+      });
+    });
+  }
 
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -35,6 +59,7 @@ class _AuthScreenState extends State<AuthScreen> {
         await authProvider.signIn(
           _emailController.text.trim(),
           _passwordController.text.trim(),
+          rememberMe: _rememberMe,
         );
       } else {
         await authProvider.signUp(
@@ -224,6 +249,30 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       validator: (v) => v!.length < 6 ? l10n.errorPassword : null,
                     ),
+                    if (_isLogin) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: Checkbox(
+                              value: _rememberMe,
+                              onChanged: (v) => setState(() => _rememberMe = v ?? false),
+                              activeColor: Colors.orange,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () => setState(() => _rememberMe = !_rememberMe),
+                            child: Text(
+                              l10n.rememberMe,
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,

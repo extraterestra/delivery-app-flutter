@@ -410,6 +410,12 @@ abstract class AppLocalizations {
   /// **'Password must be at least 6 characters'**
   String get errorPassword;
 
+  /// No description provided for @rememberMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember me'**
+  String get rememberMe;
+
   /// No description provided for @errorMessage.
   ///
   /// In en, this message translates to:
