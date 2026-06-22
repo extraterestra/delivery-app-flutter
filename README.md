@@ -10,7 +10,8 @@ We have successfully migrated the core Authentication workflow from the Web proj
 - **Native UI/UX**: Recreated the web interface using Flutter Material 3, maintaining brand consistency (colors, logos, and icons).
 - **Authentication Service**: Complete integration with the existing backend APIs.
 - **State Management**: Implemented using `Provider` to manage user sessions and profiles.
-- **Secure Storage**: JWT tokens are securely stored locally for persistent login.
+- **Remember Me & Persistence**: Implemented secure session persistence. Users can choose to stay logged in, and the app securely remembers credentials (email/password) using `flutter_secure_storage`.
+- **Localization**: Multi-language support (EN/PL) for the entire authentication flow.
 - **Form Validation**: Native mobile form validation for Login and Registration.
 
 ### Technical Stack:
@@ -37,36 +38,43 @@ The app is currently configured to connect to a local backend.
 2. Run `flutter clean` to remove any previous build artifacts.
 2. Run `flutter pub get` to install dependencies.
 3. Launch your emulator or connect a device.
-4. Run `flutter run`.
+4. Run the app using flavors (see below).
 
-### Environment Configuration
+### Environment Configuration (Flavors)
 
-The application uses environment variables to switch between **Staging** and **Production** backends. This is managed via `--dart-define=ENVIRONMENT`.
+The application uses **Flutter Flavors** to manage different environments. This allows having both Staging and Production versions installed on the same device simultaneously.
 
-#### 1. Running the App
-- **Staging (Default):**
-  Run the app on emulator:
-```powershell
-  flutter run --dart-define=ENVIRONMENT=staging
-```
-  Build the app for staging:
-```powershell
-  flutter build apk --debug --dart-define=ENVIRONMENT=staging
-  ```
-- **Production:**
+#### 1. Running the App with Flavors
+- **Staging (App Name: Rabka STG):**
   ```powershell
-  flutter run --dart-define=ENVIRONMENT=production
+  flutter run --flavor staging
+  ```
+- **Production (App Name: Rabka Dostawa):**
+  ```powershell
+  flutter run --flavor production
   ```
 
 #### 2. Building the App (APK)
 - **Staging APK:**
   ```powershell
-  flutter build apk --dart-define=ENVIRONMENT=staging
+  flutter build apk --flavor staging
   ```
-- **Production APK:**
+- **Production APK (Release):**
   ```powershell
-  flutter build apk --dart-define=ENVIRONMENT=production
+  flutter build apk --flavor production
   ```
+- **Staging Debug APK (For testing):**
+  ```powershell
+  flutter build apk --debug --flavor staging
+  ```
+
+#### 3. Automatic Environment Detection
+The app automatically detects the flavor it was built with. It uses `MethodChannel('flutter/platform').invokeMethod('getFlavor')` to determine whether to use the Staging or Production backend URL.
+
+| Environment | Flavor Name | Package ID | Backend URL |
+|-------------|-------------|------------|-------------|
+| Staging | `staging` | `com.rabka.dostawa.staging` | `delivery-app-staging-backend` |
+| Production | `production` | `com.rabka.dostawa` | `delivery-app-prod-backend` |
 
 ---
 
@@ -75,6 +83,7 @@ The application uses environment variables to switch between **Staging** and **P
 - `lib/providers/`: Business logic and state management.
 - `lib/screens/`: UI Screens (Auth, Dashboard).
 - `lib/services/`: API communication layer.
+- `lib/config/env_config.dart`: Environment-specific URLs.
 
 ---
 *This project is part of a migration study from Web to Flutter for the Rabka Dostawa team.*

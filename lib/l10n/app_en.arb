@@ -86,6 +86,7 @@
   "errorFullName": "Please enter full name",
   "errorEmail": "Please enter email",
   "errorPassword": "Password must be at least 6 characters",
+  "rememberMe": "Remember me",
   "errorMessage": "Error: {error}",
   "@errorMessage": {
     "placeholders": {

@@ -21,6 +21,31 @@ class ApiService {
     }
   }
 
+  Future<void> setRememberMe(bool value) async {
+    await _storage.write(key: 'rabka_remember_me', value: value.toString());
+  }
+
+  Future<bool> getRememberMe() async {
+    final value = await _storage.read(key: 'rabka_remember_me');
+    return value == 'true';
+  }
+
+  Future<void> saveLastEmail(String email) async {
+    await _storage.write(key: 'rabka_last_email', value: email);
+  }
+
+  Future<String?> getLastEmail() async {
+    return await _storage.read(key: 'rabka_last_email');
+  }
+
+  Future<void> saveLastPassword(String password) async {
+    await _storage.write(key: 'rabka_last_password', value: password);
+  }
+
+  Future<String?> getLastPassword() async {
+    return await _storage.read(key: 'rabka_last_password');
+  }
+
   Future<dynamic> request(String path, {String method = 'GET', Map<String, dynamic>? body}) async {
     if (_token == null) {
       try {

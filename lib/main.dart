@@ -14,14 +14,24 @@ import 'screens/auth_screen.dart';
 import 'screens/orders_screen.dart';
 import 'screens/dashboard_screen.dart';
 
+import 'package:flutter/services.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   await initializeDateFormatting('pl', null);
   await initializeDateFormatting('en', null);
 
-  const String env = String.fromEnvironment('ENVIRONMENT', defaultValue: 'staging');
-  EnvConfig.init((env == 'prod' || env == 'production') ? Environment.production : Environment.staging);
+  // Detectar el Flavor usando la constante estándar de Flutter
+  final String? flavor = appFlavor;
+  debugPrint('Running with flavor: $flavor');
+
+  // Si el flavor es production usamos esa config, de lo contrario staging
+  if (flavor == 'production') {
+    EnvConfig.init(Environment.production);
+  } else {
+    EnvConfig.init(Environment.staging);
+  }
   
   try {
     if (!kIsWeb) {
