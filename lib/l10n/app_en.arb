@@ -87,6 +87,8 @@
   "errorEmail": "Please enter email",
   "errorPassword": "Password must be at least 6 characters",
   "rememberMe": "Remember me",
+  "useBiometrics": "Use Biometrics",
+  "biometricReason": "Please authenticate to log in",
   "errorMessage": "Error: {error}",
   "@errorMessage": {
     "placeholders": {

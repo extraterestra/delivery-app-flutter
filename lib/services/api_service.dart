@@ -46,6 +46,15 @@ class ApiService {
     return await _storage.read(key: 'rabka_last_password');
   }
 
+  Future<void> setBiometricsEnabled(bool value) async {
+    await _storage.write(key: 'rabka_biometrics_enabled', value: value.toString());
+  }
+
+  Future<bool> getBiometricsEnabled() async {
+    final value = await _storage.read(key: 'rabka_biometrics_enabled');
+    return value == 'true';
+  }
+
   Future<dynamic> request(String path, {String method = 'GET', Map<String, dynamic>? body}) async {
     if (_token == null) {
       try {

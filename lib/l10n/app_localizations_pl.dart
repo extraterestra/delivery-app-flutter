@@ -178,6 +178,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get rememberMe => 'Zapamiętaj mnie';
 
   @override
+  String get useBiometrics => 'Użyj biometrii';
+
+  @override
+  String get biometricReason => 'Zaloguj się za pomocą biometrii';
+
+  @override
   String errorMessage(String error) {
     return 'Błąd: $error';
   }

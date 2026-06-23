@@ -24,6 +24,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _fullNameController = TextEditingController();
   final _phoneController = TextEditingController();
   bool _rememberMe = false;
+  bool _useBiometrics = false;
 
   @override
   void initState() {
@@ -40,12 +41,33 @@ class _AuthScreenState extends State<AuthScreen> {
       
       setState(() {
         _rememberMe = authProvider.rememberMe;
+        _useBiometrics = authProvider.biometricsEnabled;
         if (_rememberMe) {
           if (lastEmail != null) _emailController.text = lastEmail;
           if (lastPassword != null) _passwordController.text = lastPassword;
         }
       });
+
+      // If biometrics is enabled and we have credentials, maybe suggest it
+      if (_useBiometrics && lastEmail != null && lastPassword != null) {
+        // Optional: Trigger automatically? Better to let user click the icon
+      }
     });
+  }
+
+  void _authenticateBiometrically() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    setState(() => _isLoading = true);
+    
+    final success = await authProvider.authenticateWithBiometrics();
+    
+    if (!success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.error), backgroundColor: Colors.red),
+      );
+    }
+    
+    if (mounted) setState(() => _isLoading = false);
   }
 
   void _submit() async {
@@ -252,42 +274,85 @@ class _AuthScreenState extends State<AuthScreen> {
                     if (_isLogin) ...[
                       const SizedBox(height: 8),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: Checkbox(
-                              value: _rememberMe,
-                              onChanged: (v) => setState(() => _rememberMe = v ?? false),
-                              activeColor: Colors.orange,
-                            ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: Checkbox(
+                                  value: _rememberMe,
+                                  onChanged: (v) => setState(() => _rememberMe = v ?? false),
+                                  activeColor: Colors.orange,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              GestureDetector(
+                                onTap: () => setState(() => _rememberMe = !_rememberMe),
+                                child: Text(
+                                  l10n.rememberMe,
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          GestureDetector(
-                            onTap: () => setState(() => _rememberMe = !_rememberMe),
-                            child: Text(
-                              l10n.rememberMe,
-                              style: const TextStyle(color: Colors.grey),
+                          if (Provider.of<AuthProvider>(context).isBiometricAvailable)
+                            Row(
+                              children: [
+                                Text(
+                                  l10n.useBiometrics,
+                                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                                ),
+                                Switch(
+                                  value: _useBiometrics,
+                                  onChanged: (v) {
+                                    setState(() => _useBiometrics = v);
+                                    Provider.of<AuthProvider>(context, listen: false).setBiometricsEnabled(v);
+                                  },
+                                  activeColor: Colors.orange,
+                                ),
+                              ],
                             ),
-                          ),
                         ],
                       ),
                     ],
                     const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _submit,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: _isLoading ? null : _submit,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                              child: _isLoading
+                                  ? const CircularProgressIndicator(color: Colors.white)
+                                  : Text(_isLogin ? l10n.signIn : l10n.signUp, style: const TextStyle(fontSize: 18)),
+                            ),
+                          ),
                         ),
-                        child: _isLoading
-                            ? const CircularProgressIndicator(color: Colors.white)
-                            : Text(_isLogin ? l10n.signIn : l10n.signUp, style: const TextStyle(fontSize: 18)),
-                      ),
+                        if (_isLogin && _useBiometrics) ...[
+                          const SizedBox(width: 12),
+                          SizedBox(
+                            height: 50,
+                            width: 60,
+                            child: OutlinedButton(
+                              onPressed: _isLoading ? null : _authenticateBiometrically,
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(color: Colors.orange),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: const Icon(LucideIcons.fingerprint, color: Colors.orange, size: 30),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ],
                 ),
