@@ -416,6 +416,18 @@ abstract class AppLocalizations {
   /// **'Remember me'**
   String get rememberMe;
 
+  /// No description provided for @useBiometrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Biometrics'**
+  String get useBiometrics;
+
+  /// No description provided for @biometricReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Please authenticate to log in'**
+  String get biometricReason;
+
   /// No description provided for @errorMessage.
   ///
   /// In en, this message translates to:

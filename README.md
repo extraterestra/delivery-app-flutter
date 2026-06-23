@@ -11,6 +11,7 @@ We have successfully migrated the core Authentication workflow from the Web proj
 - **Authentication Service**: Complete integration with the existing backend APIs.
 - **State Management**: Implemented using `Provider` to manage user sessions and profiles.
 - **Remember Me & Persistence**: Implemented secure session persistence. Users can choose to stay logged in, and the app securely remembers credentials (email/password) using `flutter_secure_storage`.
+- **Biometric Authentication**: Added support for Fingerprint and FaceID (Android) using `local_auth`. Users can securely unlock their saved credentials for a faster login experience.
 - **Localization**: Multi-language support (EN/PL) for the entire authentication flow.
 - **Form Validation**: Native mobile form validation for Login and Registration.
 

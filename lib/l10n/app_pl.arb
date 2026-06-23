@@ -87,6 +87,8 @@
   "errorEmail": "Podaj email",
   "errorPassword": "Hasło musi mieć min. 6 znaków",
   "rememberMe": "Zapamiętaj mnie",
+  "useBiometrics": "Użyj biometrii",
+  "biometricReason": "Zaloguj się za pomocą biometrii",
   "errorMessage": "Błąd: {error}",
   "@errorMessage": {
     "placeholders": {
