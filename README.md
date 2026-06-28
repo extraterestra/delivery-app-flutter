@@ -14,13 +14,19 @@ We have successfully migrated the core Authentication workflow from the Web proj
 - **Biometric Authentication**: Added support for Fingerprint and FaceID (Android) using `local_auth`. Users can securely unlock their saved credentials for a faster login experience.
 - **Localization**: Multi-language support (EN/PL) for the entire authentication flow.
 - **Form Validation**: Native mobile form validation for Login and Registration.
+- **Active Delivery Tracking**: Real-time map view with driver, restaurant, and customer locations. Integrated live GPS tracking to monitor driver movement and calculate dynamic distances.
+- **Native Navigation**: One-tap access to Google Maps for precise delivery routing.
+- **Communication Tools**: Integrated quick-call buttons for both restaurants and customers based on the delivery stage.
+- **Visual Progress**: A dedicated delivery timeline showing the order status (Accepted -> Picked Up -> Delivered).
 
 ### Technical Stack:
 - **Framework**: Flutter
-- **Icons**: Lucide Icons (matching the web project)
+- **Icons**: Lucide Icons
 - **State Management**: Provider
-- **Networking**: Http with interceptor-like logic for JWT
+- **Networking**: Http with JWT interceptor logic
 - **Storage**: Flutter Secure Storage
+- **Maps & Geolocation**: Flutter Map (OpenStreetMap) & Geolocator
+- **Communication**: URL Launcher (for Phone and Maps navigation)
 
 ## 🛠 Setup and Installation
 
