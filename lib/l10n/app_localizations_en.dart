@@ -184,6 +184,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get biometricReason => 'Please authenticate to log in';
 
   @override
+  String distance(String value) {
+    return '$value km';
+  }
+
+  @override
+  String estimatedTime(String value) {
+    return '~$value min';
+  }
+
+  @override
+  String get navigate => 'Navigate';
+
+  @override
+  String get call => 'Call';
+
+  @override
   String errorMessage(String error) {
     return 'Error: $error';
   }

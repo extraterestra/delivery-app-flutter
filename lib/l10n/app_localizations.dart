@@ -428,6 +428,30 @@ abstract class AppLocalizations {
   /// **'Please authenticate to log in'**
   String get biometricReason;
 
+  /// No description provided for @distance.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} km'**
+  String distance(String value);
+
+  /// No description provided for @estimatedTime.
+  ///
+  /// In en, this message translates to:
+  /// **'~{value} min'**
+  String estimatedTime(String value);
+
+  /// No description provided for @navigate.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate'**
+  String get navigate;
+
+  /// No description provided for @call.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get call;
+
   /// No description provided for @errorMessage.
   ///
   /// In en, this message translates to:

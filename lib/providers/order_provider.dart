@@ -117,6 +117,7 @@ class OrderProvider with ChangeNotifier {
 
   Future<void> fetchOrders() async {
     if (_loading) return;
+
     _loading = true;
     notifyListeners();
 
