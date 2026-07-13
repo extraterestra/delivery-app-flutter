@@ -75,6 +75,14 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                   icon: LucideIcons.mapPin,
                   color: Colors.orange,
                 ),
+                const SizedBox(height: 16),
+                _InfoCard(
+                  title: l10n.payout,
+                  name: '${(currentOrder.driverPayoutAmount ?? currentOrder.deliveryFee).toStringAsFixed(2)} zł',
+                  address: currentOrder.driverPaymentStatus == 'paid' ? l10n.paid : l10n.pending,
+                  icon: LucideIcons.dollarSign,
+                  color: const Color(0xFFE57C50),
+                ),
                 if (currentOrder.orderDetails != null) ...[
                   const SizedBox(height: 16),
                   _DetailsCard(details: currentOrder.orderDetails!),

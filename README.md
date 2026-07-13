@@ -15,6 +15,27 @@ We have successfully migrated the core Authentication workflow from the Web proj
 - **Localization**: Multi-language support (EN/PL) for the entire authentication flow.
 - **Form Validation**: Native mobile form validation for Login and Registration.
 
+## 📍 Phase 2: Maps & GPS Integration (SCRUM-126)
+
+Successfully integrated mapping and location services for real-time delivery tracking.
+
+### Features Implemented:
+- **Interactive OpenStreetMap**: Integrated `flutter_map` for high-performance, interactive map views without the need for proprietary SDKs.
+- **Real-time GPS Tracking**: Implemented location services to track driver position during active deliveries.
+- **Delivery Timeline**: Added a visual status timeline (Accepted -> Picked Up -> Delivered) to keep drivers informed of their progress.
+- **Live Navigation**: Visual representation of the route between the restaurant and the customer.
+
+## 💰 Phase 3: Payouts & Earnings (SCRUM-141)
+
+Implemented delivery payout displays across all driver screens to ensure earnings transparency.
+
+### Features Implemented:
+- **Payout Visibility**: The specific earning amount is now displayed on every order card in "Available Orders" and "Active Deliveries".
+- **Active Delivery Details**: Added a dedicated Payout & Payment Status card within the active delivery screen.
+- **Earnings Dashboard**: Real-time calculation of "Today's Earnings" and "Total Earnings" on the main dashboard.
+- **Detailed History**: Enhanced the order history screen with precise payout figures and payment status (Paid/Pending) for each past delivery.
+- **Multi-language Support**: Full translation of payout-related terms in English and Polish.
+
 ### Technical Stack:
 - **Framework**: Flutter
 - **Icons**: Lucide Icons (matching the web project)
