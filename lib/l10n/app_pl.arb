@@ -90,6 +90,24 @@
   "rememberMe": "Zapamiętaj mnie",
   "useBiometrics": "Użyj biometrii",
   "biometricReason": "Zaloguj się za pomocą biometrii",
+  "distance": "{value} km",
+  "@distance": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "estimatedTime": "~{value} min",
+  "@estimatedTime": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "navigate": "Nawiguj",
+  "call": "Zadzwoń",
   "errorMessage": "Błąd: {error}",
   "@errorMessage": {
     "placeholders": {

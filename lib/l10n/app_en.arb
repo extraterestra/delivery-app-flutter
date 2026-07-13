@@ -90,6 +90,24 @@
   "rememberMe": "Remember me",
   "useBiometrics": "Use Biometrics",
   "biometricReason": "Please authenticate to log in",
+  "distance": "{value} km",
+  "@distance": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "estimatedTime": "~{value} min",
+  "@estimatedTime": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "navigate": "Navigate",
+  "call": "Call",
   "errorMessage": "Error: {error}",
   "@errorMessage": {
     "placeholders": {
