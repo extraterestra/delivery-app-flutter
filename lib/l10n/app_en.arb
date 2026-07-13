@@ -57,6 +57,7 @@
   "noAvailableOrders": "No available orders",
   "tryRefreshingLater": "Try refreshing in a moment",
   "acceptOrder": "Accept order",
+  "payout": "Payout",
   "restaurant": "Restaurant",
   "unknownAddress": "Unknown address",
   "totalEarnings": "Total earnings",

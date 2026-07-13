@@ -138,7 +138,10 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('${currentOrder.deliveryFee.toStringAsFixed(2)} zł', style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+                Text(
+                  '${(currentOrder.driverPayoutAmount ?? currentOrder.deliveryFee).toStringAsFixed(2)} zł', 
+                  style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)
+                ),
                 Text(l10n.distance(distanceKm.toStringAsFixed(0)), style: const TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),
@@ -224,6 +227,18 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                     },
                     onCall: () => _makePhoneCall(currentOrder.status == 'accepted' ? (currentOrder.restaurant?.phone ?? '') : currentOrder.customerPhone),
                   ),
+                  const SizedBox(height: 16),
+                  _InfoCard(
+                    title: l10n.payout,
+                    name: '${(currentOrder.driverPayoutAmount ?? currentOrder.deliveryFee).toStringAsFixed(2)} zł',
+                    address: currentOrder.driverPaymentStatus == 'paid' ? l10n.paid : l10n.pending,
+                    icon: LucideIcons.dollarSign,
+                    color: const Color(0xFFE57C50),
+                  ),
+                  if (currentOrder.orderDetails != null) ...[
+                    const SizedBox(height: 16),
+                    _DetailsCard(details: currentOrder.orderDetails!),
+                  ],
                   const SizedBox(height: 16),
                   _ActionButtons(
                     status: currentOrder.status,
@@ -361,13 +376,15 @@ class _DestinationCard extends StatelessWidget {
                 child: const Icon(LucideIcons.store, color: Colors.orange, size: 20),
               ),
               const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                  Text(name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  Text(address, style: const TextStyle(fontSize: 13, color: Colors.grey)),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    Text(name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                    Text(address, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+                  ],
+                ),
               ),
             ],
           ),
@@ -399,6 +416,87 @@ class _DestinationCard extends StatelessWidget {
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  final String title;
+  final String name;
+  final String address;
+  final IconData icon;
+  final Color color;
+
+  const _InfoCard({
+    required this.title,
+    required this.name,
+    required this.address,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(address, style: const TextStyle(fontSize: 13)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailsCard extends StatelessWidget {
+  final String details;
+  const _DetailsCard({required this.details});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(LucideIcons.package, size: 16),
+              const SizedBox(width: 8),
+              Text(l10n.details, style: const TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(details, style: const TextStyle(fontSize: 13)),
         ],
       ),
     );

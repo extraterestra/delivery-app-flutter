@@ -180,9 +180,24 @@ class _OrderCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              Text(
-                order.restaurant?.name ?? l10n.restaurant,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      order.restaurant?.name ?? l10n.restaurant,
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Text(
+                    '${(order.driverPayoutAmount ?? order.deliveryFee).toStringAsFixed(2)} zł',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFE57C50),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 4),
               Row(
