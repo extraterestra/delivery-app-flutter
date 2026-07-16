@@ -194,8 +194,10 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
           )
         ],
       ),
-      body: Column(
-        children: [
+      body: SafeArea(
+        top: false,
+        child: Column(
+          children: [
           // Map Section
           Expanded(
             flex: 3,
@@ -255,7 +257,11 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
           Expanded(
             flex: 4,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: MediaQuery.of(context).padding.bottom + 24,
+              ),
               child: Column(
                 children: [
                   _StatusTimeline(status: currentOrder.status),
@@ -304,8 +310,9 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _StatusTimeline extends StatelessWidget {
