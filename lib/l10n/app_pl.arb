@@ -98,6 +98,9 @@
       }
     }
   },
+  "restaurantToClient": "Restauracja do Klienta",
+  "driverToRestaurant": "Kierowca do Restauracji",
+  "driverToClient": "Kierowca do Klienta",
   "estimatedTime": "~{value} min",
   "@estimatedTime": {
     "placeholders": {
