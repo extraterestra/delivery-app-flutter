@@ -298,12 +298,6 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                     _DetailsCard(details: currentOrder.orderDetails!),
                   ],
                   const SizedBox(height: 16),
-                  _ActionButtons(
-                    status: currentOrder.status,
-                    isUpdating: _isUpdating,
-                    onUpdate: _updateStatus,
-                  ),
-                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -311,8 +305,33 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
         ],
       ),
     ),
-  );
-}
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.fromLTRB(
+          16, 
+          16, 
+          16, 
+          MediaQuery.of(context).padding.bottom > 0 
+            ? MediaQuery.of(context).padding.bottom + 8 
+            : 24, 
+        ),
+        child: _ActionButtons(
+          status: currentOrder.status,
+          isUpdating: _isUpdating,
+          onUpdate: _updateStatus,
+        ),
+      ),
+    );
+  }
 }
 
 class _StatusTimeline extends StatelessWidget {
