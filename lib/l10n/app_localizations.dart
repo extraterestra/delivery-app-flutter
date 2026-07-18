@@ -278,6 +278,12 @@ abstract class AppLocalizations {
   /// **'Accept order'**
   String get acceptOrder;
 
+  /// No description provided for @payout.
+  ///
+  /// In en, this message translates to:
+  /// **'Payout'**
+  String get payout;
+
   /// No description provided for @restaurant.
   ///
   /// In en, this message translates to:
@@ -433,6 +439,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{value} km'**
   String distance(String value);
+
+  /// No description provided for @restaurantToClient.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant to Client'**
+  String get restaurantToClient;
+
+  /// No description provided for @driverToRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver to Restaurant'**
+  String get driverToRestaurant;
+
+  /// No description provided for @driverToClient.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver to Client'**
+  String get driverToClient;
 
   /// No description provided for @estimatedTime.
   ///

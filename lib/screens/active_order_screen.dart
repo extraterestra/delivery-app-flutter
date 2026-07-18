@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -21,15 +22,22 @@ class ActiveOrderScreen extends StatefulWidget {
 class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
   bool _isUpdating = false;
   Position? _currentPosition;
+  StreamSubscription<Position>? _positionStreamSubscription;
   final MapController _mapController = MapController();
 
   @override
   void initState() {
     super.initState();
-    _determinePosition();
+    _startLocationUpdates();
   }
 
-  Future<void> _determinePosition() async {
+  @override
+  void dispose() {
+    _positionStreamSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _startLocationUpdates() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -44,10 +52,32 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
 
     if (permission == LocationPermission.deniedForever) return;
 
+    // Get initial position
     final position = await Geolocator.getCurrentPosition();
-    setState(() {
-      _currentPosition = position;
-    });
+    if (mounted) {
+      setState(() {
+        _currentPosition = position;
+      });
+    }
+
+    // Subscribe to updates
+    _positionStreamSubscription = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      ),
+    ).listen(
+      (Position position) {
+        if (mounted) {
+          setState(() {
+            _currentPosition = position;
+          });
+        }
+      },
+      onError: (error) {
+        debugPrint('Location stream error: $error');
+      },
+    );
   }
 
   Future<void> _updateStatus(String newStatus) async {
@@ -101,19 +131,30 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
         ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude) 
         : restaurantLatLng;
 
-    // Calculate distance (simplified)
-    double distanceKm = 0;
+    // Distance calculations
+    final double distResClient = Geolocator.distanceBetween(
+      restaurantLatLng.latitude, restaurantLatLng.longitude,
+      customerLatLng.latitude, customerLatLng.longitude
+    ) / 1000;
+
+    double? distDriverRes;
+    double? distDriverClient;
+
     if (_currentPosition != null) {
-      final targetLat = currentOrder.status == 'accepted' ? restaurantLatLng.latitude : customerLatLng.latitude;
-      final targetLng = currentOrder.status == 'accepted' ? restaurantLatLng.longitude : customerLatLng.longitude;
-      
-      distanceKm = Geolocator.distanceBetween(
-        _currentPosition!.latitude, 
-        _currentPosition!.longitude, 
-        targetLat, 
-        targetLng
+      distDriverRes = Geolocator.distanceBetween(
+        _currentPosition!.latitude, _currentPosition!.longitude,
+        restaurantLatLng.latitude, restaurantLatLng.longitude
+      ) / 1000;
+
+      distDriverClient = Geolocator.distanceBetween(
+        _currentPosition!.latitude, _currentPosition!.longitude,
+        customerLatLng.latitude, customerLatLng.longitude
       ) / 1000;
     }
+
+    final double? displayDistance = currentOrder.status == 'accepted' 
+        ? distDriverRes 
+        : distDriverClient;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -142,14 +183,21 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                   '${(currentOrder.driverPayoutAmount ?? currentOrder.deliveryFee).toStringAsFixed(2)} zł', 
                   style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)
                 ),
-                Text(l10n.distance(distanceKm.toStringAsFixed(0)), style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(
+                  displayDistance != null 
+                    ? l10n.distance(displayDistance.toStringAsFixed(1))
+                    : '-- km', 
+                  style: const TextStyle(color: Colors.grey, fontSize: 12)
+                ),
               ],
             ),
           )
         ],
       ),
-      body: Column(
-        children: [
+      body: SafeArea(
+        top: false,
+        child: Column(
+          children: [
           // Map Section
           Expanded(
             flex: 3,
@@ -209,7 +257,11 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
           Expanded(
             flex: 4,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: MediaQuery.of(context).padding.bottom + 24,
+              ),
               child: Column(
                 children: [
                   _StatusTimeline(status: currentOrder.status),
@@ -228,6 +280,12 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                     onCall: () => _makePhoneCall(currentOrder.status == 'accepted' ? (currentOrder.restaurant?.phone ?? '') : currentOrder.customerPhone),
                   ),
                   const SizedBox(height: 16),
+                  _DistanceMetricsCard(
+                    distResClient: distResClient,
+                    distDriverRes: currentOrder.status == 'accepted' ? distDriverRes : null,
+                    distDriverClient: (currentOrder.status == 'picked_up' || currentOrder.status == 'in_transit') ? distDriverClient : null,
+                  ),
+                  const SizedBox(height: 16),
                   _InfoCard(
                     title: l10n.payout,
                     name: '${(currentOrder.driverPayoutAmount ?? currentOrder.deliveryFee).toStringAsFixed(2)} zł',
@@ -240,17 +298,37 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
                     _DetailsCard(details: currentOrder.orderDetails!),
                   ],
                   const SizedBox(height: 16),
-                  _ActionButtons(
-                    status: currentOrder.status,
-                    isUpdating: _isUpdating,
-                    onUpdate: _updateStatus,
-                  ),
-                  const SizedBox(height: 16),
                 ],
               ),
             ),
           ),
         ],
+      ),
+    ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.fromLTRB(
+          16, 
+          16, 
+          16, 
+          MediaQuery.of(context).padding.bottom > 0 
+            ? MediaQuery.of(context).padding.bottom + 8 
+            : 24, 
+        ),
+        child: _ActionButtons(
+          status: currentOrder.status,
+          isUpdating: _isUpdating,
+          onUpdate: _updateStatus,
+        ),
       ),
     );
   }
@@ -418,6 +496,64 @@ class _DestinationCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _DistanceMetricsCard extends StatelessWidget {
+  final double distResClient;
+  final double? distDriverRes;
+  final double? distDriverClient;
+
+  const _DistanceMetricsCard({
+    required this.distResClient,
+    this.distDriverRes,
+    this.distDriverClient,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _MetricRow(label: l10n.restaurantToClient, value: distResClient),
+          if (distDriverRes != null) ...[
+            const Divider(height: 24),
+            _MetricRow(label: l10n.driverToRestaurant, value: distDriverRes!),
+          ],
+          if (distDriverClient != null) ...[
+            const Divider(height: 24),
+            _MetricRow(label: l10n.driverToClient, value: distDriverClient!),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _MetricRow extends StatelessWidget {
+  final String label;
+  final double value;
+
+  const _MetricRow({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+        Text(l10n.distance(value.toStringAsFixed(2)), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+      ],
     );
   }
 }

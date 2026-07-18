@@ -4,8 +4,10 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
+import '../models/order_model.dart';
 import 'orders_screen.dart';
 import 'order_history_screen.dart';
+import 'active_order_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -158,6 +160,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
+
 
                   // Available Orders Card
                   _buildActionCard(

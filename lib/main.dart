@@ -1,9 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/services.dart';
+
 import 'l10n/app_localizations.dart';
 import 'config/env_config.dart';
 import 'providers/auth_provider.dart';
@@ -11,13 +12,19 @@ import 'providers/order_provider.dart';
 import 'providers/locale_provider.dart';
 import 'services/notification_service.dart';
 import 'screens/auth_screen.dart';
-import 'screens/orders_screen.dart';
 import 'screens/dashboard_screen.dart';
-
-import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Configuración de UI del sistema para evitar solapamientos
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.dark,
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+  ));
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   
   await initializeDateFormatting('pl', null);
   await initializeDateFormatting('en', null);
@@ -34,6 +41,7 @@ void main() async {
   }
   
   try {
+    const kIsWeb = bool.fromEnvironment('dart.library.js_util');
     if (!kIsWeb) {
       await Firebase.initializeApp();
     }

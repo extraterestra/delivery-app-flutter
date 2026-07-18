@@ -106,6 +106,20 @@ The app automatically detects the flavor it was built with. It uses `MethodChann
 
 ---
 
+## 🧪 UI & Layout Testing (SCRUM-161)
+
+To ensure the application looks great on all devices (including those with notches and different aspect ratios), we use **Device Preview**.
+
+### How to use Device Preview:
+1. **Enable it**: In `lib/main.dart`, the `DevicePreview` widget is integrated but can be toggled via the `enabled` parameter.
+2. **Launch**: Run the app using `flutter run --flavor staging`.
+3. **Tools**: Use the side menu to switch between iOS/Android devices, change orientation, and test "Safe Area" constraints.
+
+### Debug Bypass (UI Testing):
+For rapid UI iteration without navigating the full login flow, a "Debug Bypass" pattern is documented in our Confluence. This involves injecting a `mockOrder` into the `ActiveOrderScreen` to test specific layout scenarios like button overlaps.
+
+---
+
 ## 📁 Project Structure
 - `lib/models/`: Data structures for Auth and User Profiles.
 - `lib/providers/`: Business logic and state management.

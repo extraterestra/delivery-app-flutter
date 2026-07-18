@@ -107,6 +107,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get acceptOrder => 'Accept order';
 
   @override
+  String get payout => 'Payout';
+
+  @override
   String get restaurant => 'Restaurant';
 
   @override
@@ -187,6 +190,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String distance(String value) {
     return '$value km';
   }
+
+  @override
+  String get restaurantToClient => 'Restaurant to Client';
+
+  @override
+  String get driverToRestaurant => 'Driver to Restaurant';
+
+  @override
+  String get driverToClient => 'Driver to Client';
 
   @override
   String estimatedTime(String value) {
