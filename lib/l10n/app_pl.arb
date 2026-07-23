@@ -118,5 +118,33 @@
         "type": "String"
       }
     }
-  }
+  },
+  "itemsCount": "{count} produkty",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "weight": "{value} kg",
+  "@weight": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "totalWeight": "Waga całkowita: {value} kg",
+  "@totalWeight": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "orderDetailsTitle": "Szczegóły zamówienia",
+  "product": "Produkt",
+  "quantity": "Ilość",
+  "unitWeight": "Waga jedn."
 }

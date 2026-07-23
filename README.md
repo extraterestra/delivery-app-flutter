@@ -40,6 +40,17 @@ Implemented delivery payout displays across all driver screens to ensure earning
 - **Detailed History**: Enhanced the order history screen with precise payout figures and payment status (Paid/Pending) for each past delivery.
 - **Multi-language Support**: Full translation of payout-related terms in English and Polish.
 
+## 📦 Phase 4: Detailed Order Information (SCRUM-162)
+
+Enhanced the delivery flow by providing comprehensive order details to drivers, ensuring they know exactly what they are carrying.
+
+### Features Implemented:
+- **Order Summary in Lists**: Both available and active order cards now display the total number of items and the total weight of the delivery.
+- **Detailed Order Screen**: A new dedicated screen that breaks down the order into individual items, showing quantities, unit weights, and specific customer notes.
+- **Real-time Weight Calculation**: Automatic calculation of the total delivery weight based on individual item metrics.
+- **Improved UI for Items**: Integrated package and weight icons for better scannability in lists.
+- **Multi-language Support**: Full translation of order details and metrics into English and Polish.
+
 ### Technical Stack:
 - **Framework**: Flutter
 - **Icons**: Lucide Icons

@@ -118,5 +118,33 @@
         "type": "String"
       }
     }
-  }
+  },
+  "itemsCount": "{count} items",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "weight": "{value} kg",
+  "@weight": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "totalWeight": "Total Weight: {value} kg",
+  "@totalWeight": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "orderDetailsTitle": "Order Details",
+  "product": "Product",
+  "quantity": "Qty",
+  "unitWeight": "Unit Weight"
 }

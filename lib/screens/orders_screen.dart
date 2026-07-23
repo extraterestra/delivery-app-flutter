@@ -7,6 +7,7 @@ import '../providers/order_provider.dart';
 import '../providers/auth_provider.dart';
 import '../models/order_model.dart';
 import 'active_order_screen.dart';
+import 'order_details_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -89,6 +90,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             order: order,
                             showAccept: true,
                             onAccept: () => orderProvider.acceptOrder(order.id),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => OrderDetailsScreen(order: order),
+                              ),
+                            ),
                           )),
                   ],
                 ),
@@ -210,6 +217,32 @@ class _OrderCard extends StatelessWidget {
                       style: const TextStyle(fontSize: 13, color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
+                  ),
+                ],
+              ),
+              const Divider(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(LucideIcons.package, size: 14, color: Colors.grey),
+                      const SizedBox(width: 4),
+                      Text(
+                        l10n.itemsCount(order.totalItemCount),
+                        style: const TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Icon(LucideIcons.weight, size: 14, color: Colors.grey),
+                      const SizedBox(width: 4),
+                      Text(
+                        l10n.weight(order.calculatedTotalWeight.toStringAsFixed(2)),
+                        style: const TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+                    ],
                   ),
                 ],
               ),

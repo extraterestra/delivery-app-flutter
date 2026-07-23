@@ -45,6 +45,34 @@ class Restaurant {
   }
 }
 
+class OrderItem {
+  final String id;
+  final String name;
+  final int quantity;
+  final double? weight;
+  final String? notes;
+
+  OrderItem({
+    required this.id,
+    required this.name,
+    required this.quantity,
+    this.weight,
+    this.notes,
+  });
+
+  factory OrderItem.fromJson(Map<String, dynamic> json) {
+    return OrderItem(
+      id: json['id'].toString(),
+      name: (json['name'] ?? '').toString(),
+      quantity: json['quantity'] is int ? json['quantity'] : int.tryParse('${json['quantity'] ?? 0}') ?? 0,
+      weight: _parseNullableDouble(json['weight']),
+      notes: json['notes']?.toString(),
+    );
+  }
+
+  double get totalWeight => (weight ?? 0.0) * quantity;
+}
+
 class Order {
   final String id;
   final String? restaurantId;
@@ -66,6 +94,8 @@ class Order {
   final double? driverPayoutAmount;
   final String? driverPaymentStatus;
   final DateTime? driverPaidAt;
+  final List<OrderItem> items;
+  final double? totalWeight;
 
   Order({
     required this.id,
@@ -88,9 +118,20 @@ class Order {
     this.driverPayoutAmount,
     this.driverPaymentStatus,
     this.driverPaidAt,
+    this.items = const [],
+    this.totalWeight,
   });
 
+  int get totalItemCount => items.fold(0, (sum, item) => sum + item.quantity);
+  
+  double get calculatedTotalWeight => items.fold(0.0, (sum, item) => sum + item.totalWeight);
+
   factory Order.fromJson(Map<String, dynamic> json) {
+    var itemsList = <OrderItem>[];
+    if (json['items'] != null) {
+      itemsList = (json['items'] as List).map((i) => OrderItem.fromJson(i)).toList();
+    }
+
     return Order(
       id: json['id'].toString(),
       restaurantId: json['restaurant_id']?.toString(),
@@ -114,6 +155,8 @@ class Order {
       driverPayoutAmount: json['driver_payout_amount'] != null ? _parseNullableDouble(json['driver_payout_amount']) : null,
       driverPaymentStatus: json['driver_payment_status']?.toString(),
       driverPaidAt: json['driver_paid_at'] != null ? DateTime.tryParse(json['driver_paid_at'].toString()) : null,
+      items: itemsList,
+      totalWeight: _parseNullableDouble(json['total_weight']),
     );
   }
 }
