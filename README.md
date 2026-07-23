@@ -138,5 +138,11 @@ For rapid UI iteration without navigating the full login flow, a "Debug Bypass" 
 - `lib/services/`: API communication layer.
 - `lib/config/env_config.dart`: Environment-specific URLs.
 
+## 🔧 Bug Fixes & Maintenance
+
+### Timezone Consistency (SCRUM-179)
+- Fixed an issue where order creation and delivery times were displayed in UTC instead of the user's local timezone.
+- Applied `.toLocal()` conversion across all timestamp displays in `OrdersScreen` and `OrderHistoryScreen`.
+
 ---
 *This project is part of a migration study from Web to Flutter for the Rabka Dostawa team.*
