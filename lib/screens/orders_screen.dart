@@ -174,7 +174,7 @@ class _OrderCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    timeFormat.format(order.createdAt),
+                    timeFormat.format(order.createdAt.toLocal()),
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
