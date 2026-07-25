@@ -236,7 +236,7 @@ class _OrderCard extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      const Icon(LucideIcons.weight, size: 14, color: Colors.grey),
+                      const Icon(LucideIcons.scale, size: 14, color: Colors.grey),
                       const SizedBox(width: 4),
                       Text(
                         l10n.weight(order.calculatedTotalWeight.toStringAsFixed(2)),

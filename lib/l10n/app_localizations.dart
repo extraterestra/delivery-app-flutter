@@ -481,6 +481,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error: {error}'**
   String errorMessage(String error);
+
+  /// No description provided for @itemsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} items'**
+  String itemsCount(int count);
+
+  /// No description provided for @weight.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} kg'**
+  String weight(String value);
+
+  /// No description provided for @totalWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Weight: {value} kg'**
+  String totalWeight(String value);
+
+  /// No description provided for @orderDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Details'**
+  String get orderDetailsTitle;
+
+  /// No description provided for @product.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get product;
+
+  /// No description provided for @quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Qty'**
+  String get quantity;
+
+  /// No description provided for @unitWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit Weight'**
+  String get unitWeight;
 }
 
 class _AppLocalizationsDelegate

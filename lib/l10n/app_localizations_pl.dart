@@ -215,4 +215,31 @@ class AppLocalizationsPl extends AppLocalizations {
   String errorMessage(String error) {
     return 'Błąd: $error';
   }
+
+  @override
+  String itemsCount(int count) {
+    return '$count produkty';
+  }
+
+  @override
+  String weight(String value) {
+    return '$value kg';
+  }
+
+  @override
+  String totalWeight(String value) {
+    return 'Waga całkowita: $value kg';
+  }
+
+  @override
+  String get orderDetailsTitle => 'Szczegóły zamówienia';
+
+  @override
+  String get product => 'Produkt';
+
+  @override
+  String get quantity => 'Ilość';
+
+  @override
+  String get unitWeight => 'Waga jedn.';
 }
