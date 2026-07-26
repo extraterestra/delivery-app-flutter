@@ -5,6 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/order_provider.dart';
 import '../models/order_model.dart';
+import 'order_details_screen.dart';
 
 class OrderHistoryScreen extends StatelessWidget {
   const OrderHistoryScreen({super.key});
@@ -100,66 +101,74 @@ class OrderHistoryScreen extends StatelessWidget {
 
   Widget _buildOrderCard(BuildContext context, Order order) {
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OrderDetailsScreen(order: order),
+        ),
       ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.1),
-              shape: BoxShape.circle,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
-            child: const Icon(LucideIcons.check, color: Colors.green, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(LucideIcons.check, color: Colors.green, size: 20),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    order.restaurant?.name ?? l10n.restaurant,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                  Text(
+                    order.restaurant?.address ?? l10n.unknownAddress,
+                    style: const TextStyle(color: Colors.grey, fontSize: 13),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    order.deliveredAt != null ? DateFormat('HH:mm').format(order.deliveredAt!.toLocal()) : '--:--',
+                    style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  order.restaurant?.name ?? l10n.restaurant,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  '+${(order.driverPayoutAmount ?? order.deliveryFee).toStringAsFixed(2)} zł',
+                  style: const TextStyle(color: Color(0xFFE57C50), fontWeight: FontWeight.bold, fontSize: 15),
                 ),
                 Text(
-                  order.restaurant?.address ?? l10n.unknownAddress,
-                  style: const TextStyle(color: Colors.grey, fontSize: 13),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  order.deliveredAt != null ? DateFormat('HH:mm').format(order.deliveredAt!.toLocal()) : '--:--',
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  order.driverPaymentStatus == 'paid' ? l10n.paid : l10n.pending,
+                  style: const TextStyle(color: Colors.grey, fontSize: 11),
                 ),
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '+${(order.driverPayoutAmount ?? order.deliveryFee).toStringAsFixed(2)} zł',
-                style: const TextStyle(color: Color(0xFFE57C50), fontWeight: FontWeight.bold, fontSize: 15),
-              ),
-              Text(
-                order.driverPaymentStatus == 'paid' ? l10n.paid : l10n.pending,
-                style: const TextStyle(color: Colors.grey, fontSize: 11),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

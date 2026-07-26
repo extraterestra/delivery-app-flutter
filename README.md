@@ -47,6 +47,7 @@ Enhanced the delivery flow by providing comprehensive order details to drivers, 
 ### Features Implemented:
 - **Order Summary in Lists**: Both available and active order cards now display the total number of items and the total weight of the delivery.
 - **Detailed Order Screen**: A new dedicated screen that breaks down the order into individual items, showing quantities, unit weights, and specific customer notes.
+- **Ubiquitous Access (SCRUM-66)**: Order details are now accessible at every stage of the delivery process (Pending, Accepted, Picked Up) and in the delivery history.
 - **Real-time Weight Calculation**: Automatic calculation of the total delivery weight based on individual item metrics.
 - **Improved UI for Items**: Integrated package and weight icons for better scannability in lists.
 - **Multi-language Support**: Full translation of order details and metrics into English and Polish.

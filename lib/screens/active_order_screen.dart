@@ -10,6 +10,7 @@ import '../l10n/app_localizations.dart';
 import '../models/order_model.dart';
 import '../providers/auth_provider.dart';
 import '../providers/order_provider.dart';
+import 'order_details_screen.dart';
 
 class ActiveOrderScreen extends StatefulWidget {
   final Order order;
@@ -173,6 +174,15 @@ class _ActiveOrderScreenState extends State<ActiveOrderScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(LucideIcons.info, color: Colors.orange),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => OrderDetailsScreen(order: currentOrder),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: Column(
