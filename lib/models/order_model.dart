@@ -124,7 +124,12 @@ class Order {
 
   int get totalItemCount => items.fold(0, (sum, item) => sum + item.quantity);
   
-  double get calculatedTotalWeight => items.fold(0.0, (sum, item) => sum + item.totalWeight);
+  double get calculatedTotalWeight {
+    if (items.isNotEmpty) {
+      return items.fold(0.0, (sum, item) => sum + item.totalWeight);
+    }
+    return totalWeight ?? 0.0;
+  }
 
   factory Order.fromJson(Map<String, dynamic> json) {
     var itemsList = <OrderItem>[];
@@ -136,7 +141,7 @@ class Order {
       id: json['id'].toString(),
       restaurantId: json['restaurant_id']?.toString(),
       driverId: json['driver_id']?.toString(),
-      status: (json['status'] ?? '').toString(),
+      status: (json['status'] ?? '').toString().toLowerCase(),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: json['updated_at'] != null ? DateTime.tryParse(json['updated_at'].toString()) : null,
       deliveryFee: _parseDoubleOrZero(json['delivery_fee']),

@@ -145,5 +145,10 @@ For rapid UI iteration without navigating the full login flow, a "Debug Bypass" 
 - Fixed an issue where order creation and delivery times were displayed in UTC instead of the user's local timezone.
 - Applied `.toLocal()` conversion across all timestamp displays in `OrdersScreen` and `OrderHistoryScreen`.
 
+### Order Synchronization & Detail Robustness (SCRUM-192)
+- Fixed a critical bug where orders in intermediate states like `in_delivery` or `picked_up` would result in "Order not found" errors due to missing status mapping in the provider.
+- Enhanced the `Order` model to be more resilient by parsing IDs from both `id` and `_id` fields and normalizing status strings to lowercase.
+- Implemented lazy-loading for order items in `OrderDetailsScreen` to ensure weights and item lists are always available, even if the initial list payload was partial.
+
 ---
 *This project is part of a migration study from Web to Flutter for the Rabka Dostawa team.*

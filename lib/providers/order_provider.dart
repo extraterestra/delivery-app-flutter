@@ -132,7 +132,7 @@ class OrderProvider with ChangeNotifier {
       _activeOrders = allOrders
           .where((o) =>
               o.driverId == _currentUserId &&
-              ['accepted', 'picked_up', 'in_transit'].contains(o.status))
+              ['accepted', 'picked_up', 'in_transit', 'in_delivery', 'ready'].contains(o.status))
           .toList();
 
       _completedOrders = allOrders
@@ -155,6 +155,31 @@ class OrderProvider with ChangeNotifier {
     } finally {
       _loading = false;
       notifyListeners();
+    }
+  }
+
+  Future<Order?> fetchOrderDetails(String orderId) async {
+    try {
+      final dynamic data = await _apiService.request('/api/driver/orders/$orderId');
+      final order = Order.fromJson(data);
+      
+      // Update in available orders
+      final indexAvailable = _availableOrders.indexWhere((o) => o.id == orderId);
+      if (indexAvailable != -1) {
+        _availableOrders[indexAvailable] = order;
+      }
+      
+      // Update in active orders
+      final indexActive = _activeOrders.indexWhere((o) => o.id == orderId);
+      if (indexActive != -1) {
+        _activeOrders[indexActive] = order;
+      }
+
+      notifyListeners();
+      return order;
+    } catch (e) {
+      debugPrint('[OrderProvider] fetchOrderDetails failed: $e');
+      return null;
     }
   }
 
